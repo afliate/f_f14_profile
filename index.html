@@ -89,8 +89,8 @@
   태그 (쉼표로 구분):
   <input id="tagInput" oninput="updateCard()" placeholder="RT, BL, HL">
 
-  이미지 URL:
-  <input id="imgInput" oninput="updateCard()" placeholder="이미지 링크">
+  이미지 업로드:
+<input type="file" id="imgInput" accept="image/*" onchange="loadImage(event)">
 
   직업 (쉼표로 구분):
   <input id="jobInput" oninput="updateCard()" placeholder="pld, war, drk">
@@ -157,12 +157,25 @@ let jobHTML = "";
 jobs.forEach(job => {
   if (job !== "") {
     let path = "images/jobs/ffxivjobssvg/" + job + ".svg";
-    jobHTML += `<img src="${path}" style="width:40px;">`;
+    jobHTML += `<img src="${path}" style="width:40px; filter: invert(1);">`;
   }
 });
 
 document.getElementById("job").innerHTML = jobHTML;
 
+  function loadImage(event) {
+  let file = event.target.files[0];
+
+  if (file) {
+    let reader = new FileReader();
+
+    reader.onload = function(e) {
+      document.getElementById("bgImage").src = e.target.result;
+    };
+
+    reader.readAsDataURL(file);
+  }
+}
 }
 </script>
 
