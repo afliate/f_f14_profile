@@ -91,17 +91,22 @@
 
   이미지 URL:
   <input id="imgInput" oninput="updateCard()" placeholder="이미지 링크">
+
+  직업 (쉼표로 구분):
+  <input id="jobInput" oninput="updateCard()" placeholder="pld, war, drk">
+
 </div>
 
 <!-- 카드 -->
 <div class="card">
   <img class="bg" id="bgImage" src="">
 
-  <div class="content">
-    <h1 id="name">캐릭터</h1>
-    <div id="stats"></div>
-    <div id="tags"></div>
-  </div>
+ <div class="content">
+  <div id="job"></div> <!-- ⭐ 추가 -->
+
+  <h1 id="name">캐릭터</h1>
+  <div id="stats"></div>
+  <div id="tags"></div>
 </div>
 
 <script>
@@ -142,6 +147,22 @@ function updateCard() { //  전체 업데이트 담당
   if (img) {
     document.getElementById("bgImage").src = img;
   }
+// ⭐ 직업 아이콘 여러 개
+let jobs = document.getElementById("jobInput").value
+  .split(",")
+  .map(j => j.trim().toLowerCase());
+
+let jobHTML = "";
+
+jobs.forEach(job => {
+  if (job !== "") {
+    let path = "images/jobs/ffxivjobssvg/" + job + ".svg";
+    jobHTML += `<img src="${path}" style="width:40px;">`;
+  }
+});
+
+document.getElementById("job").innerHTML = jobHTML;
+
 }
 </script>
 
