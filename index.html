@@ -10,7 +10,7 @@
 <style>
   body {
     margin: 0;
-    background: black;
+    background: #1a1a1a;
     color: white;
     font-family: sans-serif;
     display: flex;
@@ -147,9 +147,18 @@
 .horizontal .bg {
   object-position: center top;
 }
+
+  .preview-container {
+  width: 80%;              /* 오른쪽 영역 */
+  display: flex;
+  justify-content: center;
+}
+
   .preview-wrapper {
-  transform: scale(0.6);   /* ⭐ 크기 조절 */
-  transform-origin: top left;
+  transform: scale(0.7);
+  transform-origin: top center;  /* ⭐ 변경 */
+  display: flex;
+  justify-content: center;       /* ⭐ 추가 */
 }
 </style>
 </head>
@@ -193,8 +202,9 @@
 
  <!-- 카드 -->
   
-<div class="preview-wrapper">
-  <div class="card">
+<div class="preview-container">
+  <div class="preview-wrapper">
+    <div class="card">
   <img class="bg" id="bgImage" src="">
   
  <h1 id="mainTitle">LALAFELL</h1>
