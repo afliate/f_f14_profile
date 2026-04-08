@@ -16,10 +16,10 @@
   }
 
   .panel {
-    width: 20%;
-    padding: 15px;
-    background: #111;
-  }
+  width: 260px;   /* ⭐ % → 고정폭이 훨씬 안정적 */
+  padding: 15px;
+  background: #111;
+}
 
   .card {
     position: relative;
@@ -77,13 +77,15 @@
 
   .job-select {
   width: 28px;
-  margin: 3px;
+  height: 28px;
   cursor: pointer;
   filter: invert(1);
-  transition: 0.2s; 
+  transition: 0.15s;
+  display: block;
+  margin: auto;
 }
 
-  .job-select:hover {
+.job-select:hover {
   transform: scale(1.1);
 }
 
@@ -203,8 +205,8 @@
 /* ⭐ 직업 선택 영역 숨통 */
 #jobSelect {
   margin-top: 6px;
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
   gap: 6px;
 }
 
@@ -212,6 +214,28 @@
 .panel {
   border-right: 1px solid #222;
 }
+
+  .layout-buttons {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+.layout-btn {
+  flex: 1;
+  padding: 6px;
+  background: #222;
+  color: white;
+  border: 1px solid #444;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.layout-btn.active {
+  background: white;
+  color: black;
+}
+  
 </style>
 </head>
 
@@ -222,10 +246,11 @@
   <h2>파이널 판타지 14 캐릭터 시트 제작기</h2>
 
 <label>레이아웃</label>
-<select id="layoutMode" onchange="changeLayout()">
-  <option value="vertical">세로형</option>
-  <option value="horizontal">가로형</option>
-</select>
+
+<div class="layout-buttons">
+  <button class="layout-btn active" onclick="setLayout('vertical')">세로형</button>
+  <button class="layout-btn" onclick="setLayout('horizontal')">가로형</button>
+</div>
 
 <label>잡지 이름</label>
 <input id="titleInput" oninput="updateTitle()" placeholder="EORZEAN">
@@ -494,12 +519,17 @@ function updateTitle() {
 
 
 // ⭐ 레이아웃 변경
-function changeLayout() {
-  let mode = document.getElementById("layoutMode").value;
+function setLayout(mode) {
   let card = document.querySelector(".card");
 
   card.classList.remove("vertical", "horizontal");
   card.classList.add(mode);
+
+  document.querySelectorAll(".layout-btn").forEach(btn => {
+    btn.classList.remove("active");
+  });
+
+  event.target.classList.add("active");
 }
 
 
