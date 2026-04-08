@@ -4,6 +4,9 @@
 <meta charset="UTF-8">
 <title>캐릭터 시트 제작기</title>
 
+<!-- ⭐ 여기 넣기 -->
+<script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+
 <style>
   body {
     margin: 0;
@@ -84,15 +87,59 @@
   .job-select:hover {
   transform: scale(1.1);
 }
+
+  #job {
+  position: absolute;
+  left: 20px;
+  bottom: 50px;
+
+  display: flex;
+  flex-direction: column; /* ⭐ 세로 */
+  gap: 5px;
+}
+#mainTitle {
+  position: absolute;
+  top: 20px;
+  left: 50px;
+  font-size: 80px;
+  font-weight: bold;
+}
+.content {
+  display: flex;
+  gap: 20px;
+}
+
+.info {
+  margin-left: 20px;
+}
+.info {
+  background: rgba(0, 0, 0, 0.5);
+  padding: 15px;
+  border-radius: 10px;
+  backdrop-filter: blur(5px); /* ⭐ 유리 느낌 */
+}
+
+  .content {
+  position: absolute;
+  bottom: 50px;
+  left: 100px; /* 아이콘 자리 고려해서 밀기 */
+}
+
+  .feature-box {
+  background: rgba(255, 0, 0, 0.7);
+  padding: 5px 10px;
+}
 </style>
 </head>
 
 <body>
 
-<!-- 입력 패널 -->
+// <!-- 입력 패널 -->
 <div class="panel">
   <h2>파이널 판타지 14 캐릭터 시트 제작기</h2>
 
+  <h1 id="mainTitle">LALAFELL</h1>
+  
   이름:
   <input id="nameInput" oninput="updateCard()" placeholder="캐릭터 이름">
 
@@ -110,18 +157,25 @@
 
 <button onclick="selectAllJobs()">전체 선택</button>
 <button onclick="clearJobs()">전체 해제</button>
+
+  <button onclick="saveImage()">이미지 저장</button>
+  
 </div>
 
-<!-- 카드 -->
+// <!-- 카드 --> html 추가부분
 <div class="card">
   <img class="bg" id="bgImage" src="">
 
- <div class="content">
-  <div id="job"></div> <!-- ⭐ 추가 -->
+<div class="content">
+  <div id="job"></div>
+
+<div class="info">
+  <div class="feature-box">모험가</div>
 
   <h1 id="name">캐릭터</h1>
   <div id="stats"></div>
   <div id="tags"></div>
+  </div>
 </div>
 
 <script>
@@ -176,14 +230,19 @@ function updateCard() {
   document.getElementById("tags").innerHTML = tagHTML;
 
   // ⭐ 직업 표시 (선택된 것만)
-  let jobHTML = "";
+  let jobHTML = [];
 
-  selectedJobs.forEach(job => {
-    let path = "images/jobs/ffxivjobssvg/" + job + ".svg";
-    jobHTML += `<img src="${path}" style="width:40px; filter: invert(1);">`;
+// 순서대로 넣기
+Object.values(jobCategories).forEach(category => {
+  category.forEach(job => {
+    if (selectedJobs.includes(job)) {
+      let path = "images/jobs/ffxivjobssvg/" + job + ".svg";
+      jobHTML.push(`<img src="${path}" style="width:30px; filter: invert(1);">`);
+    }
   });
+});
 
-  document.getElementById("job").innerHTML = jobHTML;
+document.getElementById("job").innerHTML = jobHTML.join("");
 }
 
 // ⭐ 4. 클릭하면 선택/해제
@@ -262,6 +321,16 @@ function loadImage(event) {
   }
 }
 
+  // 이미지 저장
+function saveImage() {
+  html2canvas(document.querySelector(".card")).then(canvas => {
+    let link = document.createElement("a");
+    link.download = "character.png";
+    link.href = canvas.toDataURL();
+    link.click();
+  });
+}
+  
 // ⭐ 10. 페이지 로드시 실행
 renderJobSelect();
 
