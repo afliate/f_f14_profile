@@ -294,6 +294,75 @@
   flex-wrap: wrap;
   gap: 4px;
 }
+  .field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+.field label {
+  font-size: 12px;
+  opacity: 0.7;
+}
+
+.field input {
+  width: 100%;
+  max-width: 220px;
+  padding: 6px 8px;
+  box-sizing: border-box;
+}
+  .job-category {
+  margin-bottom: 12px;
+}
+
+.job-title {
+  font-size: 12px;
+  opacity: 0.7;
+  margin-bottom: 6px;
+}
+
+/* ⭐ 한 줄 (탱커/힐러 같은 sub row) */
+.job-subrow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+/* ⭐ 라벨 */
+.job-subtitle {
+  width: 40px;
+  font-size: 11px;
+  opacity: 0.6;
+}
+
+/* ⭐ 아이콘 줄 */
+.job-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+/* ⭐ 아이콘 고정 (절대 안 흔들리게) */
+.job-select {
+  width: 28px;
+  height: 28px;
+  cursor: pointer;
+  filter: invert(1);
+  box-sizing: border-box;
+}
+
+/* hover는 레이아웃 안 건드림 */
+.job-select:hover {
+  outline: 1px solid white;
+  outline-offset: 2px;
+}
+
+.job-selected {
+  outline: 2px solid white;
+  outline-offset: 2px;
+}
 </style>
 </head>
 
@@ -313,19 +382,24 @@
   </div>
 
   <!-- ⭐ 기본 정보 -->
-  <div class="section">
-    <h3>기본 정보</h3>
+ <div class="section">
+  <h3>기본 정보</h3>
 
+  <div class="field">
     <label>잡지 이름</label>
     <input id="titleInput" oninput="updateTitle()" placeholder="EORZEAN">
+  </div>
 
+  <div class="field">
     <label>이름</label>
     <input id="nameInput" oninput="updateCard()" placeholder="캐릭터 이름">
+  </div>
 
+  <div class="field">
     <label>전투력</label>
     <input id="powerInput" type="range" min="0" max="5" oninput="updateCard()">
   </div>
-
+</div>
   <!-- ⭐ 이미지 -->
   <div class="section">
     <h3>이미지</h3>
@@ -483,9 +557,12 @@ function renderJobSelect() {
 
     let data = jobCategories[category];
 
+    // ⭐ 전투 (2단 구조)
     if (typeof data === "object" && !Array.isArray(data)) {
 
       for (let sub in data) {
+
+        html += `<div class="job-subrow">`;
         html += `<div class="job-subtitle">${sub}</div>`;
         html += `<div class="job-row">`;
 
@@ -501,9 +578,13 @@ function renderJobSelect() {
         });
 
         html += `</div>`;
+        html += `</div>`;
       }
 
-    } else {
+    } 
+    // ⭐ 제작 / 채집
+    else {
+
       html += `<div class="job-row">`;
 
       data.forEach(job => {
