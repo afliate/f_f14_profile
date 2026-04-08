@@ -147,6 +147,10 @@
 .horizontal .bg {
   object-position: center top;
 }
+  .preview-wrapper {
+  transform: scale(0.6);   /* ⭐ 크기 조절 */
+  transform-origin: top left;
+}
 </style>
 </head>
 
@@ -189,7 +193,8 @@
 
  <!-- 카드 -->
   
-<div class="card">
+<div class="preview-wrapper">
+  <div class="card">
   <img class="bg" id="bgImage" src="">
   
  <h1 id="mainTitle">LALAFELL</h1>
