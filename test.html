@@ -200,198 +200,77 @@ input[type="file"] {
   filter: brightness(0.55);
 }
 
-/* ── 상단 바 ── */
-.top-bar {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 110px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 60px;
-  background: rgba(0,0,0,0.45);
-  backdrop-filter: blur(4px);
-  z-index: 10;
-}
-
-#mainTitle {
-  font-size: 80px;
-  font-weight: 900;
-  letter-spacing: -2px;
-  line-height: 1;
-  color: white;
-}
-
-.barcode-wrap {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 4px;
-}
-
-.barcode-svg {
-  width: 120px;
-  height: 50px;
-}
-
-.barcode-text {
-  font-size: 16px;
-  opacity: 0.5;
-  letter-spacing: 0.05em;
-}
-
-/* 하단 블록을 그라데이션으로 교체 */
-.bottom-block {
-  background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.4) 70%, transparent 100%);
-  /* ... 나머지 속성 ... */
-}
-
-/* 직업 아이콘 세로 나열 */
-#jobDisplay {
-  display: flex;
-  flex-direction: column; /* 세로로! */
-  position: absolute;
-  left: 40px;
-  bottom: 150px;
-  gap: 10px;
-}
-
-/* 칭호 + 이름 + 서버 */
-.name-section {
-  margin-bottom: 24px;
-}
-
-.feature-box {
-  display: inline-block;
-  background: rgba(200,20,20,0.9);
-  padding: 5px 14px;
-  font-size: 18px;
-  font-weight: bold;
-  letter-spacing: 0.08em;
-  margin-bottom: 10px;
-}
-
-#cardName {
-  font-size: 72px;
-  font-weight: 900;
-  margin: 0 0 6px 0;
-  letter-spacing: -1px;
-  line-height: 1;
-  color: white;
-}
-
-#serverInfo {
-  font-size: 22px;
-  opacity: 0.6;
-  letter-spacing: 0.05em;
-}
-
-/* 직업 + 오른쪽 정보 가로 배치 */
-.mid-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 40px;
-  margin-bottom: 24px;
-}
-
-/* 직업 아이콘 영역 */
-#jobDisplay {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  max-width: 600px;
-}
-
-#jobDisplay img {
-  width: 56px;
-  height: 56px;
-  filter: invert(1);
-}
-
-/* 오른쪽 정보 */
-.right-section {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 14px;
-  min-width: 300px;
-}
-
-/* 태그 */
-#cardTags { text-align: right; }
-.tag {
-  display: inline-block;
-  border: 1px solid rgba(255,255,255,0.7);
-  padding: 4px 12px;
-  margin: 3px;
-  font-size: 16px;
-  letter-spacing: 0.05em;
-}
-
-/* 활동 시간 */
-.active-time {
-  display: flex;
-  gap: 8px;
-}
-.time-slot {
-  padding: 4px 12px;
-  border: 1px solid rgba(255,255,255,0.3);
-  font-size: 15px;
-  opacity: 0.5;
-  letter-spacing: 0.03em;
-}
-.time-slot.active {
-  border-color: white;
-  opacity: 1;
-  background: rgba(255,255,255,0.1);
-}
-
-/* 메모 */
-#cardMemo {
-  font-size: 18px;
-  opacity: 0.55;
-  margin-bottom: 20px;
-  letter-spacing: 0.02em;
-  font-style: italic;
-  font-family: serif;
-}
-
-/* 푸터: 저작권 + 라인아트 */
-.bottom-footer {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
+/* 기본 카드 설정 */
+#card.vertical {
+  width: 1080px;
+  height: 1920px;
+  background: #000;
   position: relative;
+  overflow: hidden;
+  color: white;
 }
 
-.copyright {
-  font-size: 14px;
-  opacity: 0.35;
-  line-height: 1.8;
-  letter-spacing: 0.03em;
+/* 캐릭터 이름 - 잡지 타이틀처럼 크게! */
+#nameDisplay {
+  position: absolute;
+  top: 80px;
+  left: 50px;
+  font-size: 200px; /* 아주 크게 */
+  font-weight: 900;
+  line-height: 0.85;
+  letter-spacing: -5px;
+  z-index: 10;
+  text-transform: uppercase;
+  font-family: 'Arial Black', sans-serif; /* 묵직한 폰트 */
 }
 
-/* 라인아트 */
+/* 직업 아이콘 - 왼쪽 세로 나열 */
+#jobDisplay {
+  position: absolute;
+  left: 60px;
+  bottom: 300px;
+  display: flex;
+  flex-direction: column; /* 세로로 */
+  gap: 20px;
+  z-index: 20;
+}
+
+.job-icon {
+  width: 90px;
+  height: 90px;
+  filter: grayscale(1); /* 기본은 흑백 */
+  transition: 0.3s;
+}
+
+/* 메인 직업 - 포인트 색상(노란색 테두리) */
+.job-icon.main-selected {
+  filter: grayscale(0); /* 메인만 컬러 */
+  outline: 5px solid #f5c518; /* 지은이가 원한 포인트 색상 */
+  outline-offset: 5px;
+}
+
+/* 서버 정보 - 하단에 작고 깔끔하게 */
+#serverInfo {
+  position: absolute;
+  bottom: 100px;
+  left: 60px;
+  font-size: 45px;
+  font-weight: 300;
+  color: #f5c518;
+  letter-spacing: 10px;
+}
+
+/* 라인아트 - 배경에 은은하게 */
 #lineArt {
   position: absolute;
-  right: -20px;
-  bottom: -20px;
-  width: 320px;
-  opacity: 0.18;
-  mix-blend-mode: screen;
+  right: -100px;
+  bottom: -50px;
+  width: 900px;
+  opacity: 0.25;
+  filter: brightness(0) invert(1); /* 검은색 -> 흰색 */
+  z-index: 1;
   pointer-events: none;
-  filter: brightness(0) invert(1); /* 검은색을 흰색으로 강제 전환 */
 }
-
-  /* 선택된 아이콘 스타일 */
-.lineart-icon.selected {
-  border: 2px solid #f5c518 !important; /* 지은이가 좋아하는 노란색 포인트! */
-  background: #333;
-}
-
 </style>
 </head>
 
@@ -573,16 +452,28 @@ let mainJob = null;
 let activeTimes = [];
 
 /* ── 카드 업데이트 ── */
+/* 데이터센터 자동 문구 없애기 & 카드 업데이트 */
 function updateCard() {
-  document.getElementById("mainTitle").innerText =
-    document.getElementById("titleInput").value || "EORZEAN";
+  const name = document.getElementById("nameInput").value || "CHARACTER NAME";
+  const server = document.getElementById("serverInput").value || "SERVER";
+  const dc = document.getElementById("dcInput").value;
 
-  document.getElementById("featureBox").innerText =
-    document.getElementById("titleBoxInput").value || "모험가";
+  // 이름 업데이트
+  document.getElementById("nameDisplay").innerText = name;
 
-  document.getElementById("cardName").innerText =
-    document.getElementById("nameInput").value || "캐릭터";
+  // 데이터센터가 있을 때만 표시 (한섭 유저 배려!)
+  document.getElementById("serverInfo").innerText = dc ? `${server} · ${dc}` : server;
+}
 
+/* 직업 선택 로직 - 메인 포인트 컬러 */
+function renderJobs() {
+  const container = document.getElementById("jobDisplay");
+  container.innerHTML = selectedJobs.map((job, index) => {
+    // 첫 번째 누른 직업이 메인(index 0)
+    const isMain = index === 0 ? "main-selected" : "";
+    return `<img src="https://raw.githubusercontent.com/afliate/f_f14_profile/main/images/jobs/${job}.png" class="job-icon ${isMain}">`;
+  }).join("");
+}
   const server = document.getElementById("serverInput").value || "Carbuncle";
   const dc = document.getElementById("dcInput").value;
 // 데이터센터가 비어있으면 서버 이름만 나오게 처리
@@ -812,32 +703,28 @@ function saveImage() {
 }
 
   // 직업 목록 배열 (파일명과 동일하게 적어줘)
-const clJobs = [
-  "pld", "war", "drk", "gnb", // 탱커
-  "whm", "sch", "ast", "sge", // 힐러
-  "mnk", "drg", "nin", "sam", "rpr", "vpr", // 근딜
-  "brd", "mch", "dnc", // 원딜
-  "blm", "smn", "rdm", "pct", "blu"  // 마딜
-];
+const clJobs = ["pld","war","drk","gnb","whm","sch","ast","sge","mnk","drg","nin","sam","rpr","vpr","brd","mch","dnc","blm","smn","rdm","pct"];
 
-// 라인아트 선택 영역을 자동으로 생성하는 함수
-function renderLineArtSelect() {
-  const container = document.getElementById("lineArtPicker"); // HTML에 이 ID를 가진 div가 필요해
-  const baseUrl = "https://raw.githubusercontent.com/afliate/f_f14_profile/main/images/jobs/CL/";
+function initLineArt() {
+  const picker = document.getElementById("lineArtPicker");
+  if(!picker) return;
 
-  let html = clJobs.map(job => `
-    <img src="${baseUrl}${job.toUpperCase()}.png" 
-         class="lineart-icon" 
-         onclick="changeLineArt('${job.toUpperCase()}.png')" 
-         title="${job.toUpperCase()}"
-         style="width: 40px; height: 40px; cursor: pointer; margin: 4px; border: 1px solid #444; background: #222; filter: brightness(0) invert(1);">
+  picker.innerHTML = clJobs.map(job => `
+    <img src="https://raw.githubusercontent.com/afliate/f_f14_profile/main/images/jobs/CL/${job.toUpperCase()}.png" 
+         onclick="selectLineArt('${job.toUpperCase()}')"
+         style="width:50px; cursor:pointer; filter:invert(1); margin:5px;">
   `).join("");
-
-  container.innerHTML = html;
 }
 
-// 초기 실행 시 목록을 그려줘
-renderLineArtSelect();
+function selectLineArt(job) {
+  const la = document.getElementById("lineArt");
+  la.src = `https://raw.githubusercontent.com/afliate/f_f14_profile/main/images/jobs/CL/${job}.png`;
+  la.style.display = "block";
+}
+
+// 페이지 로드 시 실행
+window.onload = () => {
+  initLineArt();
   
 /* ── 초기 실행 ── */
 renderJobSelect();
