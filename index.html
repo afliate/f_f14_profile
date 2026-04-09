@@ -1,195 +1,649 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>캐릭터 시트 제작기</title>
-
+<meta charset="UTF-8">
+<title>FF14 캐릭터 시트 제작기</title>
 <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 
 <style>
-body{
-  margin:0;
-  font-family: Arial, sans-serif;
-  background:#111;
-  color:#fff;
-  display:flex;
-  height:100vh;
+/* ==========================================
+   기본 레이아웃
+========================================== */
+* {
+  box-sizing: border-box;
 }
 
-/* LEFT PANEL */
-.panel{
-  width:320px;
-  padding:16px;
-  background:#1c1c1c;
-  overflow:auto;
-}
-.panel h2{margin-top:0;}
-.panel label{display:block; margin-top:12px; font-size:14px;}
-.panel input, .panel select, .panel textarea{
-  width:100%; padding:6px; margin-top:4px;
+body {
+  margin: 0;
+  background: #1a1a1a;
+  color: white;
+  font-family: sans-serif;
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
 }
 
-button{
-  margin-top:12px;
-  width:100%; padding:10px;
-  cursor:pointer;
+/* ==========================================
+   왼쪽 입력 패널
+========================================== */
+.panel {
+  width: 260px;
+  min-width: 260px;
+  padding: 15px;
+  background: #111;
+  border-right: 1px solid #222;
+  overflow-y: auto;
+  height: 100vh;
 }
 
-/* RIGHT PREVIEW */
-.preview{
-  flex:1;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  background:#222;
+.panel h2 {
+  font-size: 13px;
+  margin: 0 0 14px 0;
+  line-height: 1.4;
+  opacity: 0.9;
 }
 
-.card{
-  width:600px;
-  height:800px;
-  position:relative;
-  background:url('https://images.unsplash.com/photo-1520975922284-9d3b0d7d2b5c') center/cover;
-  overflow:hidden;
-  box-shadow:0 10px 40px rgba(0,0,0,0.5);
+/* 섹션 구분 */
+.section {
+  margin-bottom: 14px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #222;
 }
 
-.overlay{
-  position:absolute;
-  inset:0;
-  background:rgba(0,0,0,0.55);
-  padding:20px;
-  display:flex;
-  flex-direction:column;
-  gap:10px;
+.section h3 {
+  font-size: 11px;
+  opacity: 0.5;
+  margin: 0 0 8px 0;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
-.header{
-  font-size:14px;
-  opacity:0.8;
+/* 필드 (라벨 + 인풋 묶음) */
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 8px;
 }
 
-.title{
-  font-size:28px;
-  font-weight:bold;
+.field label {
+  font-size: 11px;
+  opacity: 0.6;
 }
 
-.section{
-  margin-top:10px;
-  padding:10px;
-  border:1px solid rgba(255,255,255,0.2);
+.field input[type="text"],
+.field input[type="range"] {
+  width: 100%;
+  padding: 5px 7px;
+  background: #222;
+  border: 1px solid #333;
+  color: white;
+  font-size: 12px;
 }
 
-.jobs{
-  display:flex;
-  flex-wrap:wrap;
-  gap:6px;
+.field input[type="range"] {
+  padding: 0;
+  cursor: pointer;
 }
 
-.job{
-  padding:4px 8px;
-  border:1px solid #fff;
-  font-size:12px;
+/* 레이아웃 버튼 */
+.layout-buttons {
+  display: flex;
+  gap: 6px;
 }
 
-.bottom{
-  margin-top:auto;
-  font-size:12px;
-  opacity:0.7;
+.layout-btn {
+  flex: 1;
+  padding: 6px;
+  background: #222;
+  color: white;
+  border: 1px solid #444;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.layout-btn.active {
+  background: white;
+  color: black;
+}
+
+/* 파일 인풋 */
+input[type="file"] {
+  font-size: 11px;
+  color: #aaa;
+  width: 100%;
+}
+
+/* 직업 선택 영역 */
+.job-category {
+  margin-bottom: 10px;
+}
+
+.job-title {
+  font-size: 11px;
+  opacity: 0.5;
+  margin-bottom: 6px;
+}
+
+.job-subrow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 5px;
+}
+
+.job-subtitle {
+  width: 36px;
+  font-size: 10px;
+  opacity: 0.5;
+  flex-shrink: 0;
+}
+
+.job-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.job-icon {
+  width: 26px;
+  height: 26px;
+  cursor: pointer;
+  filter: invert(1);
+  opacity: 0.4;
+  transition: opacity 0.1s;
+}
+
+.job-icon:hover {
+  opacity: 0.8;
+  outline: 1px solid rgba(255,255,255,0.5);
+  outline-offset: 2px;
+}
+
+.job-icon.selected {
+  opacity: 1;
+  outline: 2px solid white;
+  outline-offset: 2px;
+}
+
+/* 액션 버튼들 */
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.actions button {
+  padding: 7px;
+  background: #222;
+  border: 1px solid #444;
+  color: white;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.actions button:hover {
+  background: #333;
+}
+
+/* ==========================================
+   오른쪽 미리보기 영역
+========================================== */
+.preview-container {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  overflow: hidden;
+  padding: 20px;
+}
+
+.preview-wrapper {
+  transform-origin: top center;
+}
+
+/* ==========================================
+   카드 본체
+========================================== */
+.card {
+  position: relative;
+  overflow: hidden;
+  background: #000;
+}
+
+/* 세로형 기본 */
+.card.vertical {
+  width: 1080px;
+  height: 1920px;
+}
+
+/* 가로형 */
+.card.horizontal {
+  width: 1920px;
+  height: 1080px;
+}
+
+/* 배경 이미지 */
+.card .bg {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  filter: brightness(0.5);
+}
+
+/* 잡지 제목 (상단) */
+#mainTitle {
+  position: absolute;
+  top: 60px;
+  left: 80px;
+  font-size: 120px;
+  font-weight: 900;
+  letter-spacing: -2px;
+  line-height: 1;
+  z-index: 10;
+  pointer-events: none;
+}
+
+/* 하단 정보 블록 */
+.content {
+  position: absolute;
+  bottom: 80px;
+  left: 80px;
+  display: flex;
+  align-items: flex-end;
+  gap: 20px;
+  z-index: 10;
+}
+
+/* 직업 아이콘들 (카드 위) */
+#jobDisplay {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+#jobDisplay img {
+  width: 40px;
+  height: 40px;
+  filter: invert(1);
+}
+
+/* 정보 박스 */
+.info {
+  background: rgba(0,0,0,0.55);
+  padding: 20px 24px;
+  backdrop-filter: blur(6px);
+  min-width: 260px;
+}
+
+.feature-box {
+  display: inline-block;
+  background: rgba(200,20,20,0.85);
+  padding: 4px 12px;
+  font-size: 14px;
+  font-weight: bold;
+  letter-spacing: 0.08em;
+  margin-bottom: 10px;
+}
+
+#name {
+  font-size: 56px;
+  font-weight: 900;
+  margin: 0 0 8px 0;
+  letter-spacing: -1px;
+  line-height: 1.1;
+}
+
+#stats {
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+
+.dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border: 1.5px solid white;
+  border-radius: 50%;
+  margin-right: 4px;
+  vertical-align: middle;
+}
+
+.dot.filled {
+  background: white;
+}
+
+#tags {
+  margin-top: 6px;
+}
+
+.tag {
+  display: inline-block;
+  border: 1px solid rgba(255,255,255,0.7);
+  padding: 3px 10px;
+  margin-right: 5px;
+  margin-top: 4px;
+  font-size: 13px;
+  letter-spacing: 0.05em;
 }
 </style>
 </head>
+
 <body>
 
+<!-- ==========================================
+     왼쪽 패널
+========================================== -->
 <div class="panel">
-  <h2>입력 패널</h2>
+  <h2>FF14 캐릭터 시트 제작기</h2>
 
-  <label>잡지 이름</label>
-  <input id="magazine" />
-
-  <label>캐릭터 이름</label>
-  <input id="name" />
-
-  <label>전투력</label>
-  <input id="power" type="number" />
-
-  <label>잡 선택 (다중 가능)</label>
-  <select id="job" multiple>
-    <option>전사</option>
-    <option>마법사</option>
-    <option>힐러</option>
-    <option>탱커</option>
-  </select>
-
-  <label>태그 (쉼표)</label>
-  <input id="tags" />
-
-  <label>이미지 업로드</label>
-  <input type="file" id="img" />
-
-  <button onclick="renderCard()">적용</button>
-  <button onclick="saveCard()">이미지 저장</button>
-</div>
-
-<div class="preview">
-  <div class="card" id="card">
-    <div class="overlay">
-      <div class="header" id="magazineOut">DAILY EORZEA</div>
-      <div class="title" id="nameOut">CHARACTER NAME</div>
-
-      <div class="section">
-        <strong>JOBS</strong>
-        <div class="jobs" id="jobOut"></div>
-      </div>
-
-      <div class="section">
-        <strong>POWER</strong>
-        <div id="powerOut"></div>
-      </div>
-
-      <div class="section">
-        <strong>TAGS</strong>
-        <div id="tagsOut"></div>
-      </div>
-
-      <div class="bottom">FFXIV CHARACTER SHEET</div>
+  <!-- 레이아웃 -->
+  <div class="section">
+    <h3>레이아웃</h3>
+    <div class="layout-buttons">
+      <button class="layout-btn active" onclick="setLayout('vertical', this)">세로형</button>
+      <button class="layout-btn" onclick="setLayout('horizontal', this)">가로형</button>
     </div>
+  </div>
+
+  <!-- 기본 정보 -->
+  <div class="section">
+    <h3>기본 정보</h3>
+
+    <div class="field">
+      <label>잡지 이름</label>
+      <input type="text" id="titleInput" oninput="updateTitle()" placeholder="EORZEAN">
+    </div>
+
+    <div class="field">
+      <label>캐릭터 이름</label>
+      <input type="text" id="nameInput" oninput="updateCard()" placeholder="이름">
+    </div>
+
+    <div class="field">
+      <label>전투력 (0~5)</label>
+      <input type="range" id="powerInput" min="0" max="5" value="0" oninput="updateCard()">
+    </div>
+  </div>
+
+  <!-- 이미지 -->
+  <div class="section">
+    <h3>배경 이미지</h3>
+    <input type="file" accept="image/*" onchange="loadImage(event)">
+  </div>
+
+  <!-- 직업 -->
+  <div class="section">
+    <h3>직업 선택</h3>
+    <div id="jobSelect"></div>
+  </div>
+
+  <!-- 태그 -->
+  <div class="section">
+    <h3>태그</h3>
+    <div class="field">
+      <label>쉼표로 구분</label>
+      <input type="text" id="tagInput" oninput="updateCard()" placeholder="RT, BL, HL">
+    </div>
+  </div>
+
+  <!-- 액션 -->
+  <div class="section actions">
+    <button onclick="selectAllJobs()">전체 선택</button>
+    <button onclick="clearJobs()">전체 해제</button>
+    <button onclick="saveImage()">이미지 저장</button>
   </div>
 </div>
 
+
+<!-- ==========================================
+     오른쪽 미리보기
+========================================== -->
+<div class="preview-container">
+  <div class="preview-wrapper" id="previewWrapper">
+
+    <div class="card vertical" id="card">
+      <!-- 배경 -->
+      <img class="bg" id="bgImage" src="">
+
+      <!-- 잡지 제목 -->
+      <div id="mainTitle">EORZEAN</div>
+
+      <!-- 하단 컨텐츠 -->
+      <div class="content">
+        <div id="jobDisplay"></div>
+
+        <div class="info">
+          <div class="feature-box">모험가</div>
+          <div id="name">캐릭터</div>
+          <div id="stats"></div>
+          <div id="tags"></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
 <script>
-let imgUrl = "";
+// ==========================================
+//  직업 데이터
+// ==========================================
+const jobCategories = {
+  "전투": {
+    "탱커": ["pld","war","drk","gnb"],
+    "힐러": ["whm","sch","ast","sge"],
+    "근딜": ["mnk","drg","nin","sam","rpr","vpr"],
+    "원딜": ["brd","mch","dnc"],
+    "마딜": ["blm","smn","rdm","pct","blu"]
+  },
+  "제작": ["crp","bsm","arm","gsm","ltw","wvr","alc","cul"],
+  "채집": ["min","btn","fsh"]
+};
 
-document.getElementById('img').addEventListener('change', function(e){
-  const file = e.target.files[0];
-  const reader = new FileReader();
-  reader.onload = function(evt){
-    imgUrl = evt.target.result;
-    document.getElementById('card').style.backgroundImage = `url(${imgUrl})`;
-  };
-  reader.readAsDataURL(file);
-});
+let selectedJobs = [];
 
-function renderCard(){
-  document.getElementById('magazineOut').innerText = document.getElementById('magazine').value || 'DAILY EORZEA';
-  document.getElementById('nameOut').innerText = document.getElementById('name').value || 'CHARACTER NAME';
-  document.getElementById('powerOut').innerText = document.getElementById('power').value || '0';
 
-  const tags = document.getElementById('tags').value.split(',');
-  document.getElementById('tagsOut').innerHTML = tags.map(t => `<span class='job'>${t.trim()}</span>`).join('');
+// ==========================================
+//  카드 업데이트
+// ==========================================
+function updateCard() {
+  // 이름
+  document.getElementById("name").innerText =
+    document.getElementById("nameInput").value || "캐릭터";
 
-  const jobs = Array.from(document.getElementById('job').selectedOptions).map(o => o.value);
-  document.getElementById('jobOut').innerHTML = jobs.map(j => `<span class='job'>${j}</span>`).join('');
+  // 전투력 점 표시
+  const power = Number(document.getElementById("powerInput").value) || 0;
+  let dotsHTML = "전투: ";
+  for (let i = 0; i < 5; i++) {
+    dotsHTML += `<span class="dot ${i < power ? "filled" : ""}"></span>`;
+  }
+  document.getElementById("stats").innerHTML = dotsHTML;
+
+  // 태그
+  const tags = document.getElementById("tagInput").value.split(",");
+  document.getElementById("tags").innerHTML = tags
+    .map(t => t.trim())
+    .filter(t => t !== "")
+    .map(t => `<span class="tag">${t}</span>`)
+    .join("");
+
+  // 직업 아이콘 (카드 위)
+  const allJobs = getAllJobsInOrder();
+  document.getElementById("jobDisplay").innerHTML = allJobs
+    .filter(job => selectedJobs.includes(job))
+    .map(job => `<img src="images/jobs/ffxivjobssvg/${job}.svg">`)
+    .join("");
 }
 
-function saveCard(){
-  html2canvas(document.getElementById('card')).then(canvas => {
-    const link = document.createElement('a');
-    link.download = 'character.png';
+
+// ==========================================
+//  직업 선택 UI 생성
+// ==========================================
+function renderJobSelect() {
+  let html = "";
+
+  for (const category in jobCategories) {
+    const data = jobCategories[category];
+    html += `<div class="job-category">`;
+    html += `<div class="job-title">${category}</div>`;
+
+    if (typeof data === "object" && !Array.isArray(data)) {
+      // 전투 (서브 카테고리 있음)
+      for (const sub in data) {
+        html += `<div class="job-subrow">`;
+        html += `<div class="job-subtitle">${sub}</div>`;
+        html += `<div class="job-row">`;
+        data[sub].forEach(job => {
+          html += `<img src="images/jobs/ffxivjobssvg/${job}.svg"
+                       class="job-icon"
+                       id="icon-${job}"
+                       onclick="toggleJob('${job}')"
+                       title="${job}">`;
+        });
+        html += `</div></div>`;
+      }
+    } else {
+      // 제작 / 채집
+      html += `<div class="job-row">`;
+      data.forEach(job => {
+        html += `<img src="images/jobs/ffxivjobssvg/${job}.svg"
+                     class="job-icon"
+                     id="icon-${job}"
+                     onclick="toggleJob('${job}')"
+                     title="${job}">`;
+      });
+      html += `</div>`;
+    }
+
+    html += `</div>`;
+  }
+
+  document.getElementById("jobSelect").innerHTML = html;
+}
+
+
+// ==========================================
+//  직업 토글
+// ==========================================
+function toggleJob(job) {
+  if (selectedJobs.includes(job)) {
+    selectedJobs = selectedJobs.filter(j => j !== job);
+  } else {
+    selectedJobs.push(job);
+  }
+  updateSelectionUI();
+  updateCard();
+}
+
+function updateSelectionUI() {
+  document.querySelectorAll(".job-icon").forEach(el => {
+    const job = el.id.replace("icon-", "");
+    el.classList.toggle("selected", selectedJobs.includes(job));
+  });
+}
+
+function selectAllJobs() {
+  selectedJobs = getAllJobsInOrder();
+  updateSelectionUI();
+  updateCard();
+}
+
+function clearJobs() {
+  selectedJobs = [];
+  updateSelectionUI();
+  updateCard();
+}
+
+// 순서 유지용 전체 직업 목록
+function getAllJobsInOrder() {
+  const all = [];
+  Object.values(jobCategories).forEach(cat => {
+    if (Array.isArray(cat)) {
+      all.push(...cat);
+    } else {
+      Object.values(cat).forEach(sub => all.push(...sub));
+    }
+  });
+  return all;
+}
+
+
+// ==========================================
+//  이미지 / 제목
+// ==========================================
+function loadImage(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => document.getElementById("bgImage").src = e.target.result;
+  reader.readAsDataURL(file);
+}
+
+function updateTitle() {
+  document.getElementById("mainTitle").innerText =
+    document.getElementById("titleInput").value || "EORZEAN";
+}
+
+
+// ==========================================
+//  레이아웃 변경
+// ==========================================
+function setLayout(mode, btn) {
+  const card = document.getElementById("card");
+  card.classList.remove("vertical", "horizontal");
+  card.classList.add(mode);
+
+  document.querySelectorAll(".layout-btn").forEach(b => b.classList.remove("active"));
+  btn.classList.add("active");
+
+  fitPreview();
+}
+
+
+// ==========================================
+//  미리보기 스케일 자동 조정
+// ==========================================
+function fitPreview() {
+  const card = document.getElementById("card");
+  const container = document.querySelector(".preview-container");
+  const wrapper = document.getElementById("previewWrapper");
+
+  const cw = container.clientWidth - 40;
+  const ch = container.clientHeight - 40;
+  const cardW = card.classList.contains("vertical") ? 1080 : 1920;
+  const cardH = card.classList.contains("vertical") ? 1920 : 1080;
+
+  const scale = Math.min(cw / cardW, ch / cardH);
+  wrapper.style.transform = `scale(${scale})`;
+  wrapper.style.width = cardW + "px";
+  wrapper.style.height = cardH + "px";
+}
+
+
+// ==========================================
+//  이미지 저장
+// ==========================================
+function saveImage() {
+  html2canvas(document.getElementById("card"), { scale: 2 }).then(canvas => {
+    const link = document.createElement("a");
+    link.download = "character_sheet.png";
     link.href = canvas.toDataURL();
     link.click();
   });
 }
+
+
+// ==========================================
+//  초기 실행
+// ==========================================
+renderJobSelect();
+updateCard();
+fitPreview();
+window.addEventListener("resize", fitPreview);
 </script>
 
 </body>
