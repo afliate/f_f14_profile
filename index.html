@@ -114,8 +114,8 @@ input[type="file"] {
   transition: opacity 0.1s;
 }
 .job-icon:hover { opacity: 0.8; outline: 1px solid rgba(255,255,255,0.5); outline-offset: 2px; }
-.job-icon.selected { opacity: 1; outline: 2px solid white; outline-offset: 2px; }
-.job-icon.main-selected { opacity: 1; outline: 2px solid #f5c518; outline-offset: 2px; }
+.job-icon.selected { outline: 2px solid white; }
+.job-icon.main-selected { outline: 2px solid #f5c518; }
 
 /* 직업 섹션 헤더 */
 .job-section-header {
@@ -236,7 +236,10 @@ input[type="file"] {
 
 /* 칭호 + 이름 + 서버 */
 .name-section {
-  margin-bottom: 24px;
+  position: absolute;
+  top: 180px;
+  left: 60px;
+  z-index: 10;
 }
 
 .feature-box {
@@ -308,7 +311,10 @@ input[type="file"] {
 }
 
 /* 활동 시간 */
-.active-time {
+#activeTimeDisplay {
+  position: absolute;
+  bottom: 80px;
+  left: 60px;
   display: flex;
   gap: 8px;
 }
@@ -327,13 +333,12 @@ input[type="file"] {
 
 /* 메모 */
 #cardMemo {
-  font-size: 18px;
-  opacity: 0.55;
-  margin-bottom: 20px;
-  letter-spacing: 0.02em;
-  font-style: italic;
-  font-family: serif;
+  position: absolute;
+  bottom: 140px;
+  left: 60px;
+  max-width: 500px;
 }
+
 
 /* 푸터: 저작권 + 라인아트 */
 .bottom-footer {
@@ -351,22 +356,24 @@ input[type="file"] {
 }
 
 /* 라인아트 */
-#lineArt {
-  position: absolute;
-  right: -20px;
-  bottom: -20px;
-  width: 320px;
-  opacity: 0.18;
-  mix-blend-mode: screen;
-  pointer-events: none;
+#lineArtSelect {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
 }
 
- .name-section {
-  position: absolute;
-  bottom: 160px;
-  left: 60px;
-  z-index: 10;
+#lineArtSelect img {
+  width: 26px;
+  height: 26px;
+  cursor: pointer;
+  filter: invert(1);
+  opacity: 0.5;
 }
+
+#lineArtSelect img:hover {
+  opacity: 1;
+}
+
 
 .feature-box {
   font-size: 20px;
@@ -383,16 +390,20 @@ input[type="file"] {
 
   #jobDisplay {
   position: absolute;
-  top: 180px;
+  top: 200px;
   right: 60px;
-  flex-direction: column;
-  align-items: flex-end;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  max-width: 300px;
+  gap: 6px;
 }
-  #cardTags {
+  
+ #cardTags {
   position: absolute;
-  top: 400px;
+  top: 320px;
   left: 60px;
-  max-width: 500px;
+  max-width: 400px;
 }
 
 .tag {
@@ -460,8 +471,10 @@ input[type="file"] {
 
   <!-- 라인아트 이미지 -->
   <div class="section">
-    <h3>라인아트 이미지</h3>
-    <input type="file" accept="image/*" onchange="loadLineArt(event)">
+  <h3>라인아트 선택</h3>
+  <div id="lineArtSelect"></div>
+</div>
+   
   </div>
 
   <!-- 직업 선택 -->
@@ -599,10 +612,16 @@ function updateCard() {
   document.getElementById("cardName").innerText =
     document.getElementById("nameInput").value || "캐릭터";
 
-  const server = document.getElementById("serverInput").value || "Carbuncle";
-  const dc     = document.getElementById("dcInput").value     || "Elemental";
-  document.getElementById("serverInfo").innerText = `${server} · ${dc}`;
+  const server = document.getElementById("serverInput").value;
+const dc     = document.getElementById("dcInput").value;
 
+document.getElementById("serverInfo").innerText =
+  dc ? `${server} · ${dc}` : server;
+
+  if (mainJob) {
+  setLineArt(mainJob);
+}
+  
   // 바코드 텍스트
   const nameVal = document.getElementById("nameInput").value || "FF14";
   document.getElementById("barcodeText").innerText = nameVal.toUpperCase().slice(0, 12);
@@ -611,21 +630,22 @@ function updateCard() {
   // 직업 아이콘
   const allJobs = getAllJobsInOrder();
   document.getElementById("jobDisplay").innerHTML = allJobs
-    .filter(job => selectedJobs.includes(job))
-    .map(job => {
-  const isMain = job === mainJob;
+  .filter(job => selectedJobs.includes(job))
+  .map(job => {
+    const isMain = job === mainJob;
 
-  const style = isMain
-    ? "width:56px;height:56px;filter:invert(1);box-shadow:0 0 14px #f5c518;"
-    : "width:56px;height:56px;filter:invert(1);opacity:0.3;";
+    const style = isMain
+      ? "width:56px;height:56px;filter:invert(1);opacity:1;"
+      : "width:56px;height:56px;filter:invert(1);opacity:0.4;";
 
-  return `<img src="images/jobs/ffxivjobssvg_meteor/${job}.svg" style="${style}">`;
-})
+    return `<img src="images/jobs/ffxivjobssvg_meteor/${job}.svg" style="${style}">`;
+  }).join("");
+
   // 태그
-  const tags = document.getElementById("tagInput").value.split(",");
-  document.getElementById("cardTags").innerHTML = tags
-    .map(t => t.trim()).filter(t => t)
-    .map(t => `<span class="tag">${t}</span>`).join("");
+  const tags = document.getElementById("tagInput").value
+  .split(",")
+  .map(t => `<div class="tag">${t}</div>`)
+  .filter(t => t);
 
   // 활동 시간
   const timeLabels = ["아침","점심","저녁","심야"];
@@ -680,22 +700,16 @@ function renderJobSelect() {
 }
 
 function toggleJob(job) {
-  if (!selectedJobs.includes(job)) {
-    selectedJobs.push(job);
-  } else if (mainJob !== job) {
-    mainJob = job;
-  } else {
-    selectedJobs = selectedJobs.filter(j => j !== job);
-    if (mainJob === job) mainJob = null;
-  }
-  updateSelectionUI();
-  updateCard();
+if (!selectedJobs.includes(job)) {
+  selectedJobs.push(job);
+} else {
+  mainJob = job;
 }
+updateCard();
 
 function updateSelectionUI() {
   document.querySelectorAll(".job-icon").forEach(el => {
     const job = el.id.replace("icon-", "");
-    el.classList.remove("selected", "main-selected");
     if (job === mainJob)           el.classList.add("main-selected");
     else if (selectedJobs.includes(job)) el.classList.add("selected");
   });
@@ -758,16 +772,10 @@ function loadBgImage(event) {
   reader.readAsDataURL(file);
 }
 
-function loadLineArt(event) {
-  const file = event.target.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = e => {
-    const la = document.getElementById("lineArt");
-    la.src = e.target.result;
-    la.style.display = "block";
-  };
-  reader.readAsDataURL(file);
+function setLineArt(job) {
+  const la = document.getElementById("lineArt");
+  la.src = `images/jobs/CL/${job}.png`;
+  la.style.display = "block";
 }
 
 function startDrag(e) {
@@ -827,6 +835,30 @@ function saveImage() {
   });
 }
 
+  function renderLineArtSelect() {
+  const jobs = [
+    "pld","war","drk","gnb",
+    "whm","sch","ast","sge",
+    "mnk","drg","nin","sam","rpr","vpr",
+    "brd","mch","dnc",
+    "blm","smn","rdm","pct" "blu"
+  ];
+
+  document.getElementById("lineArtSelect").innerHTML =
+    jobs.map(job =>
+      `<img src="images/jobs/ffxivjobssvg/${job}.svg"
+        onclick="setLineArt('${job}')"
+        title="${job}">`
+    ).join("");
+}
+
+  function setLineArt(job) {
+  const la = document.getElementById("lineArt");
+  la.src = `images/jobs/CL/${job.toUpperCase()}.png`;
+  la.style.display = "block";
+}
+
+  
 /* ── 초기 실행 ── */
 renderJobSelect();
 drawBarcode();
