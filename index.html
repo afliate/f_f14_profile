@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<title>FF14 캐릭터 시트 제작기</title>
+<title>FF14 잡지 커버 카드 생성기</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;700;900&family=Bebas+Neue&family=Noto+Sans+KR:wght@300;400;500&display=swap" rel="stylesheet">
 <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 <style>
@@ -21,8 +21,8 @@ body {
    왼쪽 패널
 ========================================== */
 .panel {
-  width: 260px;
-  min-width: 260px;
+  width: 240px;
+  min-width: 240px;
   padding: 14px;
   background: #0e0e0e;
   border-right: 1px solid #1e1e1e;
@@ -57,6 +57,7 @@ body {
 }
 .field label { font-size: 10px; opacity: 0.5; }
 .field input[type="text"],
+.field textarea,
 .field select {
   width: 100%;
   padding: 5px 7px;
@@ -65,16 +66,10 @@ body {
   color: white;
   font-size: 12px;
   font-family: sans-serif;
+  resize: vertical;
 }
 .field select option { background: #1a1a1a; }
 input[type="file"] { font-size: 11px; color: #888; width: 100%; }
-.layout-buttons { display: flex; gap: 6px; }
-.layout-btn {
-  flex: 1; padding: 6px;
-  background: #1a1a1a; color: white;
-  border: 1px solid #333; cursor: pointer; font-size: 11px;
-}
-.layout-btn.active { background: white; color: black; }
 .check-row {
   display: flex; align-items: center; gap: 6px; margin-top: 4px;
 }
@@ -101,28 +96,6 @@ input[type="file"] { font-size: 11px; color: #888; width: 100%; }
 }
 .job-icon:hover { opacity: 0.75; }
 .job-icon.selected { opacity: 1; outline: 1px solid rgba(255,255,255,0.6); outline-offset: 1px; }
-.job-icon.main-selected { opacity: 1; outline: 2px solid #f5c518; outline-offset: 1px; }
-
-/* 메인잡 별도 선택 */
-.main-job-select-grid { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 4px; }
-.main-job-select-icon {
-  width: 28px; height: 28px;
-  cursor: pointer; filter: invert(1);
-  opacity: 0.3; transition: opacity 0.1s;
-}
-.main-job-select-icon:hover { opacity: 0.7; }
-.main-job-select-icon.selected { opacity: 1; outline: 2px solid #f5c518; outline-offset: 1px; }
-
-/* 플레이스타일 */
-.playstyle-grid { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 4px; }
-.ps-icon {
-  width: 28px; height: 28px;
-  cursor: pointer; opacity: 0.3;
-  transition: opacity 0.1s;
-  filter: invert(1);
-}
-.ps-icon:hover { opacity: 0.6; }
-.ps-icon.selected { opacity: 1; outline: 1px solid white; outline-offset: 1px; }
 
 .section button {
   padding: 6px; background: #1a1a1a;
@@ -179,185 +152,249 @@ input[type="file"] { font-size: 11px; color: #888; width: 100%; }
   position: absolute; inset: 0;
   background: linear-gradient(
     to bottom,
-    rgba(0,0,0,0.45) 0%,
-    rgba(0,0,0,0.1) 25%,
-    transparent 45%,
-    rgba(0,0,0,0.55) 72%,
-    rgba(0,0,0,0.88) 100%
+    rgba(0,0,0,0.35) 0%,
+    rgba(0,0,0,0.05) 20%,
+    transparent 40%,
+    rgba(0,0,0,0.4) 70%,
+    rgba(0,0,0,0.82) 100%
   );
   z-index: 1; pointer-events: none;
 }
 
-/* 상단 */
+/* ── 메인 타이틀 (상단 꽉 차는 큰 글자) ── */
+#mainTitle {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  padding: 18px 40px 0;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 230px; line-height: 0.88; letter-spacing: 4px;
+  color: white;
+  opacity: 0.92;
+  z-index: 10;
+  pointer-events: none; user-select: none;
+  text-shadow: 2px 4px 20px rgba(0,0,0,0.5);
+}
+
+/* ── 상단 날짜 + 바코드 ── */
 .card-top {
   position: absolute;
-  top: 0; left: 0; right: 0; height: 110px;
+  top: 0; left: 0; right: 0; height: 90px;
   display: flex; align-items: flex-start; justify-content: space-between;
-  padding: 36px 52px 0;
-  z-index: 10;
+  padding: 28px 44px 0;
+  z-index: 12;
 }
 .card-date {
-  font-size: 20px; opacity: 0.55;
+  font-size: 18px; opacity: 0.55;
   letter-spacing: 0.12em;
   font-family: 'Bebas Neue', sans-serif;
 }
-
-/* 메인 타이틀 */
-#mainTitle {
-  position: absolute;
-  top: 38px; left: 0; right: 0;
-  text-align: center;
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 210px; line-height: 0.88; letter-spacing: 8px;
-  color: white;
-  opacity: 0.75;
-  z-index: 2; pointer-events: none; user-select: none;
-}
-
-/* 바코드 */
 .barcode-area { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
-.barcode-svg { width: 100px; height: 38px; }
-.barcode-label { font-size: 14px; opacity: 0.35; letter-spacing: 0.08em; font-family: 'Bebas Neue', sans-serif; }
+.barcode-svg { width: 90px; height: 32px; }
+.barcode-label { font-size: 13px; opacity: 0.35; letter-spacing: 0.08em; font-family: 'Bebas Neue', sans-serif; }
 
-/* 구분선 */
+/* ── 구분선 ── */
 .card-divider-top {
-  position: absolute; top: 108px; left: 48px; right: 48px;
-  height: 1px; background: rgba(255,255,255,0.15); z-index: 10;
-}
-.card-divider-bottom {
-  position: absolute; bottom: 200px; left: 120px; right: 48px;
-  height: 1px; background: rgba(255,255,255,0.1); z-index: 10;
+  position: absolute; top: 220px; left: 40px; right: 40px;
+  height: 1px; background: rgba(255,255,255,0.2); z-index: 10;
 }
 
-/* 왼쪽 세로 영역 */
+/* ── 왼쪽 특집 블록 영역 ── */
+.card-features {
+  position: absolute;
+  top: 240px; left: 40px;
+  z-index: 10;
+  display: flex; flex-direction: column; gap: 28px;
+  max-width: 420px;
+}
+
+/* 특집 블록 */
+.feature-block { display: flex; flex-direction: column; gap: 5px; }
+.feature-label {
+  display: inline-block;
+  background: rgba(200,20,20,0.92);
+  padding: 3px 12px;
+  font-size: 22px; font-weight: 900;
+  letter-spacing: 0.06em;
+  font-family: 'Noto Serif KR', serif;
+  color: white;
+  margin-bottom: 2px;
+}
+.feature-title {
+  font-size: 48px; font-weight: 900; line-height: 1.1;
+  letter-spacing: -0.01em;
+  font-family: 'Noto Serif KR', serif;
+  color: white;
+  text-shadow: 1px 2px 8px rgba(0,0,0,0.6);
+}
+.feature-title span { display: block; }
+.feature-subtitle {
+  font-size: 22px; opacity: 0.7; line-height: 1.5;
+  letter-spacing: 0.02em; font-family: 'Noto Sans KR', sans-serif;
+  font-weight: 300;
+}
+
+/* ── 오른쪽: 이달의 모델 라벨 ── */
+.card-model-label {
+  position: absolute;
+  top: 410px; right: 50px;
+  z-index: 10;
+  text-align: right;
+}
+.model-heading {
+  font-size: 26px; opacity: 0.75;
+  letter-spacing: 0.12em;
+  font-family: 'Bebas Neue', sans-serif;
+}
+.model-name-display {
+  font-size: 22px; opacity: 0.55;
+  letter-spacing: 0.06em;
+  font-family: 'Noto Sans KR', sans-serif;
+  font-weight: 300;
+  margin-top: 4px;
+}
+
+/* ── 왼쪽 세로 아이콘 + 크레딧 ── */
 .card-left {
   position: absolute;
-  left: 0; top: 120px; bottom: 0; width: 110px;
+  left: 0; top: 0; bottom: 0; width: 56px;
   display: flex; flex-direction: column;
   align-items: center; justify-content: flex-end;
-  padding-bottom: 50px; z-index: 10;
+  padding-bottom: 36px; z-index: 10;
 }
-#subJobDisplay { display: flex; flex-direction: column; gap: 6px; align-items: center; margin-bottom: 16px; }
-.sub-job-row { display: flex; gap: 6px; }
-.job-card-icon-sub { width: 44px; height: 44px; filter: invert(1); opacity: 0.75; }
+#subJobDisplay {
+  display: flex; flex-direction: column;
+  align-items: center; gap: 8px;
+  margin-bottom: 18px;
+}
+.job-card-icon-sub { width: 36px; height: 36px; filter: invert(1); opacity: 0.7; }
 .card-credit {
   writing-mode: vertical-rl; text-orientation: mixed;
-  font-size: 13px; opacity: 0.28; letter-spacing: 0.06em;
+  font-size: 12px; opacity: 0.3; letter-spacing: 0.05em;
   font-family: sans-serif; line-height: 1.4; white-space: nowrap;
 }
 
-/* 오른쪽 영역 */
-.card-right {
+/* ── 하단 바코드 + 크레딧 ── */
+.card-bottom {
   position: absolute;
-  right: 48px; top: 120px; bottom: 60px; width: 210px;
-  display: flex; flex-direction: column; align-items: flex-end;
+  bottom: 36px; left: 70px; right: 44px;
+  display: flex; align-items: flex-end; justify-content: space-between;
   z-index: 10;
 }
-.main-job-area { display: flex; flex-direction: column; align-items: center; gap: 6px; margin-bottom: 24px; }
-#mainJobIcon {
-  width: 100px; height: 100px;
-  filter: invert(1) drop-shadow(0 0 10px rgba(245,197,24,0.85));
-  display: none;
+.bottom-info {
+  font-size: 13px; opacity: 0.28; line-height: 1.8;
+  letter-spacing: 0.03em; font-family: sans-serif;
 }
-.main-job-label { font-size: 14px; opacity: 0.4; letter-spacing: 0.14em; font-family: 'Bebas Neue', sans-serif; }
-
-.playstyle-section {
-  width: 100%; display: flex; flex-direction: column; align-items: flex-end;
-  gap: 8px; margin-bottom: 24px;
+.bottom-right-barcode {
+  display: flex; flex-direction: column; align-items: flex-end; gap: 3px;
 }
-.playstyle-heading { font-size: 15px; opacity: 0.38; letter-spacing: 0.14em; font-family: 'Bebas Neue', sans-serif; }
-#playstyleDisplay { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 6px; max-width: 210px; }
-.ps-card-icon { width: 38px; height: 38px; filter: invert(1); opacity: 0.75; }
-
-#activeTimeDisplay { display: flex; flex-direction: column; gap: 5px; align-items: flex-end; margin-top: auto; }
-.time-label { font-size: 14px; opacity: 0.35; letter-spacing: 0.1em; font-family: 'Bebas Neue', sans-serif; margin-bottom: 2px; }
-.time-slot { padding: 3px 12px; border: 1px solid rgba(255,255,255,0.2); font-size: 15px; opacity: 0.3; letter-spacing: 0.06em; }
-.time-slot.active { border-color: white; opacity: 1; background: rgba(255,255,255,0.08); }
-
-/* 칭호+닉네임: 상단으로 */
-.bottom-left {
-  position: absolute;
-  top: 170px; left: 170px;
-  z-index: 7;
-}
-.ingame-note { font-size: 16px; opacity: 0.38; letter-spacing: 0.04em; margin-bottom: 4px; font-family: sans-serif; }
-.feature-box {
-  display: inline-block;
-  background: rgba(200,20,20,0.92);
-  padding: 5px 14px; font-size: 20px; font-weight: bold;
-  letter-spacing: 0.08em; margin-bottom: 8px; font-family: sans-serif;
-}
-#cardName { font-family: 'Bebas Neue', sans-serif; font-size: 130px; line-height: 0.88; letter-spacing: 2px; color: white; }
-#serverDisplay { font-size: 22px; opacity: 0.5; letter-spacing: 0.06em; font-family: 'Bebas Neue', sans-serif; margin-top: 10px; }
-
-/* 성향 */
-#cardTags { position: absolute; bottom: 130px; left: 120px; z-index: 10; display: flex; flex-wrap: wrap; gap: 6px; }
-.tag { border: 1px solid rgba(255,255,255,0.55); padding: 3px 12px; font-size: 16px; letter-spacing: 0.05em; font-family: sans-serif; }
-
-/* 메모 */
-#cardMemo { position: absolute; bottom: 80px; left: 120px; font-size: 17px; opacity: 0.4; letter-spacing: 0.04em; font-family: sans-serif; z-index: 10; }
-
-/* 라인아트 */
-#lineArt {
-  position: absolute; bottom: -40px; left: 50%; transform: translateX(-50%);
-  width: 620px; height: 620px; object-fit: contain;
-  opacity: 0.1; filter: invert(1);
-  z-index: 5; pointer-events: none; display: none;
+.bottom-barcode-svg { width: 110px; height: 34px; }
+.design-credit {
+  font-size: 13px; opacity: 0.32;
+  letter-spacing: 0.04em; font-family: 'Bebas Neue', sans-serif;
 }
 
-.copyright {
-  position: absolute; bottom: 36px; right: 52px;
-  font-size: 13px; opacity: 0.22; line-height: 1.9;
-  letter-spacing: 0.03em; font-family: sans-serif; text-align: right; z-index: 10;
+/* ── 성향 태그 ── */
+#cardTags {
+  position: absolute; bottom: 110px; left: 70px;
+  z-index: 10; display: flex; flex-wrap: wrap; gap: 6px;
+}
+.tag {
+  border: 1px solid rgba(255,255,255,0.5);
+  padding: 3px 12px; font-size: 15px;
+  letter-spacing: 0.05em; font-family: sans-serif;
+}
+
+/* ── 메모 ── */
+#cardMemo {
+  position: absolute; bottom: 80px; left: 70px;
+  font-size: 16px; opacity: 0.4;
+  letter-spacing: 0.04em; font-family: sans-serif; z-index: 10;
 }
 </style>
 </head>
 
 <body>
 
+<!-- ==========================================
+     왼쪽 패널
+========================================== -->
 <div class="panel">
   <div class="panel-title">FF14 잡지 커버 카드 생성기</div>
 
   <div class="section">
-    <h3>레이아웃</h3>
-    <div class="layout-buttons">
-      <button class="layout-btn active" onclick="setLayout('vertical', this)">세로형</button>
-      <button class="layout-btn" onclick="setLayout('horizontal', this)">가로형</button>
-    </div>
-  </div>
-
-  <div class="section">
     <h3>기본 정보</h3>
     <div class="field">
-      <label>잡지 이름</label>
-      <input type="text" id="titleInput" oninput="updateCard()" placeholder="EORZEAN">
+      <label>잡지 타이틀</label>
+      <input type="text" id="titleInput" oninput="updateCard()" placeholder="ADVENTURE">
     </div>
     <div class="field">
       <label>날짜</label>
       <input type="text" id="dateInput" oninput="updateCard()" placeholder="APRIL 2026">
     </div>
     <div class="field">
-      <label>칭호</label>
-      <input type="text" id="titleBoxInput" oninput="updateCard()" placeholder="모험가">
+      <label>오른쪽 라벨 (예: 이달의 모델)</label>
+      <input type="text" id="modelLabelInput" oninput="updateCard()" placeholder="이달의 모델">
     </div>
     <div class="field">
-      <label>닉네임</label>
-      <input type="text" id="nameInput" oninput="updateCard()" placeholder="이름">
+      <label>오른쪽 부제 (예: 새벽의 모험가)</label>
+      <input type="text" id="modelNameInput" oninput="updateCard()" placeholder="새벽의 모험가">
     </div>
-    <div class="check-row">
-      <input type="checkbox" id="ingameCheck" onchange="updateCard()">
-      <label for="ingameCheck">* 인게임과 달라요</label>
-    </div>
-    <div class="field" style="margin-top:8px;">
+    <div class="field">
       <label>서버</label>
       <select id="serverInput" onchange="updateCard()">
         <option value="">서버 선택</option>
-        <option>카벙클</option>
-        <option>초코보</option>
-        <option>모그리</option>
-        <option>톤베리</option>
-        <option>펜리르</option>
+        <optgroup label="Elemental">
+          <option>Aegis</option><option>Atomos</option><option>Carbuncle</option>
+          <option>Garuda</option><option>Gungnir</option><option>Kujata</option>
+          <option>Tonberry</option><option>Typhon</option>
+        </optgroup>
+        <optgroup label="Gaia">
+          <option>Alexander</option><option>Bahamut</option><option>Durandal</option>
+          <option>Fenrir</option><option>Ifrit</option><option>Ridill</option>
+          <option>Tiamat</option><option>Ultima</option>
+        </optgroup>
+        <optgroup label="Mana">
+          <option>Anima</option><option>Asura</option><option>Chocobo</option>
+          <option>Hades</option><option>Ixion</option><option>Masamune</option>
+          <option>Pandaemonium</option><option>Titan</option>
+        </optgroup>
+        <optgroup label="Meteor">
+          <option>Bismarck</option><option>Ravana</option><option>Sephirot</option>
+          <option>Sophia</option><option>Zurvan</option>
+        </optgroup>
       </select>
+    </div>
+  </div>
+
+  <div class="section">
+    <h3>특집 블록 1</h3>
+    <div class="field">
+      <label>라벨 (빨간 박스)</label>
+      <input type="text" id="feat1LabelInput" oninput="updateCard()" placeholder="특종!">
+    </div>
+    <div class="field">
+      <label>제목</label>
+      <input type="text" id="feat1TitleInput" oninput="updateCard()" placeholder="모험을 돌 수 있는 시간은?">
+    </div>
+    <div class="field">
+      <label>부내용 (줄바꿈 가능)</label>
+      <textarea id="feat1SubInput" oninput="updateCard()" rows="2" placeholder="아침 점심 저녁 심야 새벽"></textarea>
+    </div>
+  </div>
+
+  <div class="section">
+    <h3>특집 블록 2</h3>
+    <div class="field">
+      <label>제목 (크게)</label>
+      <input type="text" id="feat2TitleInput" oninput="updateCard()" placeholder="모험가,">
+    </div>
+    <div class="field">
+      <label>부제</label>
+      <input type="text" id="feat2SubtitleInput" oninput="updateCard()" placeholder="주로 무슨 일을 할까?">
+    </div>
+    <div class="field">
+      <label>내용 (쉼표 구분)</label>
+      <input type="text" id="feat2ContentInput" oninput="updateCard()" placeholder="하우징,레벨링,레이드,국민신">
     </div>
   </div>
 
@@ -368,20 +405,8 @@ input[type="file"] { font-size: 11px; color: #888; width: 100%; }
   </div>
 
   <div class="section">
-    <h3>라인아트 선택</h3>
-    <div style="font-size:9px; opacity:0.3; margin-bottom:6px;">created by SIREN · ko-fi.com/s/2e76352d92</div>
-    <div id="lineArtSelect" style="display:flex; flex-wrap:wrap; gap:4px;"></div>
-  </div>
-
-  <div class="section">
-    <h3>메인 직업</h3>
-    <div style="font-size:9px; opacity:0.35; margin-bottom:6px;">클릭으로 선택 / 다시 클릭하면 해제</div>
-    <div class="main-job-select-grid" id="mainJobSelect"></div>
-  </div>
-
-  <div class="section">
     <div class="job-section-header" onclick="toggleJobSection()">
-      <span>보유 직업</span>
+      <span>보유 직업 (왼쪽 아이콘)</span>
       <span id="jobArrow" style="font-size:10px; opacity:0.4;">▼</span>
     </div>
     <div class="job-section-body" id="jobSectionBody">
@@ -394,32 +419,24 @@ input[type="file"] { font-size: 11px; color: #888; width: 100%; }
   </div>
 
   <div class="section">
-    <h3>플레이 스타일</h3>
-    <div class="playstyle-grid" id="playstyleSelect"></div>
-  </div>
-
-  <div class="section">
-    <h3>성향</h3>
+    <h3>성향 태그</h3>
     <div class="field">
       <label>쉼표로 구분</label>
-      <input type="text" id="tagInput" oninput="updateCard()">
-    </div>
-  </div>
-
-  <div class="section">
-    <h3>활동 시간</h3>
-    <div style="display:flex; gap:5px; flex-wrap:wrap;">
-      <button class="time-btn" data-time="아침" onclick="toggleTime(this)">아침</button>
-      <button class="time-btn" data-time="점심" onclick="toggleTime(this)">점심</button>
-      <button class="time-btn" data-time="저녁" onclick="toggleTime(this)">저녁</button>
-      <button class="time-btn" data-time="심야" onclick="toggleTime(this)">심야</button>
+      <input type="text" id="tagInput" oninput="updateCard()" placeholder="밤샘러,공략파,하우저">
     </div>
   </div>
 
   <div class="section">
     <h3>메모 / 코멘트</h3>
     <div class="field">
-      <input type="text" id="memoInput" oninput="updateCard()">
+      <input type="text" id="memoInput" oninput="updateCard()" placeholder="주접 코멘트...">
+    </div>
+  </div>
+
+  <div class="section">
+    <h3>디자인 크레딧</h3>
+    <div class="field">
+      <input type="text" id="designCreditInput" oninput="updateCard()" placeholder="Design @Dan_Fairy14">
     </div>
   </div>
 
@@ -429,62 +446,62 @@ input[type="file"] { font-size: 11px; color: #888; width: 100%; }
 </div>
 
 
+<!-- ==========================================
+     미리보기
+========================================== -->
 <div class="preview-container">
   <div class="preview-wrapper" id="previewWrapper">
     <div class="card vertical" id="card">
 
+      <!-- 배경 이미지 -->
       <img class="bg" id="bgImage" src="">
       <div class="card-overlay"></div>
 
-      <div id="mainTitle">EORZEAN</div>
-
+      <!-- 상단: 날짜 + 바코드 -->
       <div class="card-top">
         <div class="card-date" id="cardDate">APRIL 2026</div>
         <div class="barcode-area">
-          <svg class="barcode-svg" id="barcodeSvg" viewBox="0 0 100 38"></svg>
+          <svg class="barcode-svg" id="barcodeSvg" viewBox="0 0 90 32"></svg>
           <div class="barcode-label" id="barcodeLabel">FF14-PROFILE</div>
         </div>
       </div>
 
+      <!-- 메인 타이틀 (배경 위 큰 글자) -->
+      <div id="mainTitle">ADVENTURE</div>
+
+      <!-- 상단 구분선 -->
       <div class="card-divider-top"></div>
 
-      <div class="bottom-left">
-        <div class="ingame-note" id="ingameNote" style="display:none;">* 인게임과 달라요</div>
-        <div class="feature-box" id="featureBox">모험가</div>
-        <div id="cardName">캐릭터</div>
-        <div id="serverDisplay"></div>
+      <!-- 왼쪽 특집 블록들 -->
+      <div class="card-features" id="cardFeatures">
+        <!-- JS로 렌더링 -->
       </div>
 
+      <!-- 오른쪽 이달의 모델 -->
+      <div class="card-model-label">
+        <div class="model-heading" id="modelLabelDisplay">이달의 모델</div>
+        <div class="model-name-display" id="modelNameDisplay">새벽의 모험가</div>
+      </div>
+
+      <!-- 왼쪽 세로: 직업 아이콘 + 저작권 -->
       <div class="card-left">
         <div id="subJobDisplay"></div>
         <div class="card-credit">ⓒ SQUARE ENIX · Published in Korea by ACTOZ SOFT CO., LTD · FINAL FANTASY XIV</div>
       </div>
 
-      <div class="card-right">
-        <div class="main-job-area">
-          <img id="mainJobIcon" src="">
-          <div class="main-job-label">MAIN JOB</div>
-        </div>
-        <div class="playstyle-section">
-          <div class="playstyle-heading">PLAY STYLE</div>
-          <div id="playstyleDisplay"></div>
-        </div>
-        <div id="activeTimeDisplay">
-          <div class="time-label">ACTIVE TIME</div>
-        </div>
-      </div>
-
-      <div class="card-divider-bottom"></div>
-
+      <!-- 성향 태그 -->
       <div id="cardTags"></div>
+
+      <!-- 메모 -->
       <div id="cardMemo"></div>
 
-      <img id="lineArt" src="">
-
-      <div class="copyright">
-        ⓒ SQUARE ENIX<br>
-        Published in Korea by ACTOZ SOFT CO., LTD<br>
-        FINAL FANTASY XIV
+      <!-- 하단 정보 + 바코드 -->
+      <div class="card-bottom">
+        <div class="bottom-info" id="bottomServerInfo"></div>
+        <div class="bottom-right-barcode">
+          <svg class="bottom-barcode-svg" id="bottomBarcodeSvg" viewBox="0 0 110 34"></svg>
+          <div class="design-credit" id="designCreditDisplay">Design @Dan_Fairy14</div>
+        </div>
       </div>
 
     </div>
@@ -503,24 +520,7 @@ const jobCategories = {
   }
 };
 
-const playstyleList = [
-  {id:1,label:"RP"},{id:2,label:"플레이어 이벤트"},{id:3,label:"레벨링"},
-  {id:4,label:"초보자"},{id:5,label:"부담 없이 즐기기"},{id:6,label:"진지한 공략"},
-  {id:9,label:"제작"},{id:10,label:"채광/원예"},{id:11,label:"하우징"},
-  {id:12,label:"마물사냥"},{id:13,label:"보물찾기"},{id:14,label:"PvP"},
-  {id:15,label:"낚시"},{id:16,label:"작패유희"},{id:17,label:"악기 연주"},
-  {id:18,label:"장비 투영"},{id:19,label:"단체 자세"},{id:20,label:"골드 소서"},
-  {id:21,label:"대화 나누기"},{id:22,label:"메인 퀘스트"},{id:23,label:"특수 필드 탐색"},
-  {id:24,label:"특수 던전 탐색"},{id:25,label:"무인도 개척"},{id:26,label:"길 모으기"},
-  {id:27,label:"업적"},{id:28,label:"던전"},{id:29,label:"레이드"},
-  {id:30,label:"토벌전"},{id:31,label:"절 레이드"},{id:32,label:"딥 던전"},
-  {id:33,label:"무작위 임무"},{id:34,label:"청마도사"},{id:35,label:"멘토"},
-];
-
 let selectedJobs = [];
-let mainJob = null;
-let activeTimes = [];
-let selectedPlaystyles = [];
 
 function getAllJobsInOrder() {
   const all = [];
@@ -531,63 +531,87 @@ function getAllJobsInOrder() {
   return all;
 }
 
+/* ── 카드 전체 업데이트 ── */
 function updateCard() {
+  // 타이틀
   document.getElementById("mainTitle").innerText =
-    document.getElementById("titleInput").value || "EORZEAN";
+    document.getElementById("titleInput").value || "ADVENTURE";
 
+  // 날짜
   const dateVal = document.getElementById("dateInput").value;
   document.getElementById("cardDate").innerText =
     dateVal ? dateVal.toUpperCase() : getCurrentDate();
 
-  document.getElementById("featureBox").innerText =
-    document.getElementById("titleBoxInput").value || "모험가";
+  // 오른쪽 모델 라벨
+  document.getElementById("modelLabelDisplay").innerText =
+    document.getElementById("modelLabelInput").value || "이달의 모델";
+  document.getElementById("modelNameDisplay").innerText =
+    document.getElementById("modelNameInput").value || "";
 
-  const nameVal = document.getElementById("nameInput").value;
-  document.getElementById("cardName").innerText = nameVal || "캐릭터";
-  document.getElementById("barcodeLabel").innerText = (nameVal||"FF14").toUpperCase().slice(0,12);
+  // 서버
+  const sv = document.getElementById("serverInput").value;
+  document.getElementById("bottomServerInfo").innerHTML = sv
+    ? `ⓒ SQUARE ENIX<br>Published in Korea by ACTOZ SOFT CO., LTD<br>${sv} Server`
+    : `ⓒ SQUARE ENIX<br>Published in Korea by ACTOZ SOFT CO., LTD`;
 
-  document.getElementById("ingameNote").style.display =
-    document.getElementById("ingameCheck").checked ? "block" : "none";
+  // 디자인 크레딧
+  document.getElementById("designCreditDisplay").innerText =
+    document.getElementById("designCreditInput").value || "Design @Dan_Fairy14";
 
-  document.getElementById("serverDisplay").innerText =
-    document.getElementById("serverInput").value || "";
+  // 특집 블록
+  renderFeatureBlocks();
 
-  const mainIcon = document.getElementById("mainJobIcon");
-  if (mainJob) {
-    mainIcon.src = `images/jobs/ffxivjobssvg_meteor/${mainJob}.svg`;
-    mainIcon.style.display = "block";
-  } else {
-    mainIcon.style.display = "none";
-  }
-
+  // 직업 아이콘
   const allJobs = getAllJobsInOrder();
-  const subJobs = allJobs.filter(j => selectedJobs.includes(j) && j !== mainJob);
-  let subHtml = "";
-  for (let i = 0; i < subJobs.length; i += 2) {
-    subHtml += `<div class="sub-job-row">`;
-    subHtml += `<img class="job-card-icon-sub" src="images/jobs/ffxivjobssvg_meteor/${subJobs[i]}.svg">`;
-    if (subJobs[i+1]) subHtml += `<img class="job-card-icon-sub" src="images/jobs/ffxivjobssvg_meteor/${subJobs[i+1]}.svg">`;
-    subHtml += `</div>`;
-  }
-  document.getElementById("subJobDisplay").innerHTML = subHtml;
+  const subJobs = allJobs.filter(j => selectedJobs.includes(j));
+  document.getElementById("subJobDisplay").innerHTML =
+    subJobs.map(j =>
+      `<img class="job-card-icon-sub" src="images/jobs/ffxivjobssvg_meteor/${j}.svg">`
+    ).join("");
 
-  document.getElementById("playstyleDisplay").innerHTML =
-    selectedPlaystyles.map(id => {
-      const num = String(id).padStart(2,"0");
-      return `<img class="ps-card-icon" src="images/activity/1/${num}.png" title="${playstyleList.find(p=>p.id===id)?.label||''}">`;
-    }).join("");
-
-  const slots = ["아침","점심","저녁","심야"]
-    .map(t => `<div class="time-slot ${activeTimes.includes(t)?'active':''}">${t}</div>`).join("");
-  document.getElementById("activeTimeDisplay").innerHTML = `<div class="time-label">ACTIVE TIME</div>${slots}`;
-
+  // 태그
   document.getElementById("cardTags").innerHTML =
-    document.getElementById("tagInput").value
+    (document.getElementById("tagInput").value || "")
       .split(",").map(t=>t.trim()).filter(t=>t)
       .map(t=>`<span class="tag">${t}</span>`).join("");
 
+  // 메모
   document.getElementById("cardMemo").innerText =
     document.getElementById("memoInput").value || "";
+}
+
+function renderFeatureBlocks() {
+  const feat1Label   = document.getElementById("feat1LabelInput").value.trim();
+  const feat1Title   = document.getElementById("feat1TitleInput").value.trim();
+  const feat1Sub     = document.getElementById("feat1SubInput").value.trim();
+  const feat2Title   = document.getElementById("feat2TitleInput").value.trim();
+  const feat2Sub     = document.getElementById("feat2SubtitleInput").value.trim();
+  const feat2Content = document.getElementById("feat2ContentInput").value.trim();
+
+  let html = "";
+
+  // 블록 1
+  if (feat1Label || feat1Title || feat1Sub) {
+    html += `<div class="feature-block">`;
+    if (feat1Label) html += `<div class="feature-label">${feat1Label}</div>`;
+    if (feat1Title) html += `<div class="feature-subtitle" style="font-size:22px;opacity:0.65;">${feat1Title}</div>`;
+    if (feat1Sub)   html += `<div class="feature-subtitle">${feat1Sub}</div>`;
+    html += `</div>`;
+  }
+
+  // 블록 2
+  if (feat2Title || feat2Sub || feat2Content) {
+    html += `<div class="feature-block">`;
+    if (feat2Title)   html += `<div class="feature-title"><span>${feat2Title}</span></div>`;
+    if (feat2Sub)     html += `<div class="feature-subtitle" style="margin-top:6px;">${feat2Sub}</div>`;
+    if (feat2Content) {
+      const items = feat2Content.split(",").map(t=>t.trim()).filter(t=>t);
+      html += `<div class="feature-subtitle" style="opacity:0.55;">${items.join(" · ")}</div>`;
+    }
+    html += `</div>`;
+  }
+
+  document.getElementById("cardFeatures").innerHTML = html;
 }
 
 function getCurrentDate() {
@@ -597,37 +621,17 @@ function getCurrentDate() {
   return `${months[now.getMonth()]} ${now.getFullYear()}`;
 }
 
-function drawBarcode() {
-  const svg = document.getElementById("barcodeSvg");
-  const bars = 36, w = 100, h = 38;
+function drawBarcode(svgId, w, h) {
+  const svg = document.getElementById(svgId);
+  const bars = 36;
   let html = "";
   for (let i = 0; i < bars; i++) {
     const x = (i/bars)*w;
-    const bw = Math.random()<0.35 ? 2.0 : 1.0;
-    const bh = Math.random()<0.18 ? h*0.65 : h*0.88;
-    html += `<rect x="${x.toFixed(1)}" y="${(h-bh).toFixed(1)}" width="${bw}" height="${bh.toFixed(1)}" fill="white" opacity="0.6"/>`;
+    const bw = Math.random()<0.35 ? 2.2 : 1.0;
+    const bh = Math.random()<0.18 ? h*0.65 : h*0.9;
+    html += `<rect x="${x.toFixed(1)}" y="${(h-bh).toFixed(1)}" width="${bw}" height="${bh.toFixed(1)}" fill="white" opacity="0.5"/>`;
   }
   svg.innerHTML = html;
-}
-
-function renderMainJobSelect() {
-  document.getElementById("mainJobSelect").innerHTML =
-    getAllJobsInOrder().map(job =>
-      `<img src="images/jobs/ffxivjobssvg/${job}.svg"
-            class="main-job-select-icon" id="mjs-${job}"
-            onclick="setMainJob('${job}')" title="${job}">`
-    ).join("");
-}
-
-function setMainJob(job) {
-  mainJob = (mainJob === job) ? null : job;
-  if (mainJob && !selectedJobs.includes(job)) {
-    selectedJobs.push(job);
-    updateSelectionUI();
-  }
-  document.querySelectorAll(".main-job-select-icon").forEach(el=>el.classList.remove("selected"));
-  if (mainJob) document.getElementById(`mjs-${mainJob}`)?.classList.add("selected");
-  updateCard();
 }
 
 function renderJobSelect() {
@@ -649,53 +653,26 @@ function renderJobSelect() {
   document.getElementById("jobSelect").innerHTML = html;
 }
 
-function renderPlaystyleSelect() {
-  document.getElementById("playstyleSelect").innerHTML =
-    playstyleList.map(p => {
-      const num = String(p.id).padStart(2,"0");
-      return `<img src="images/activity/1/${num}.png" class="ps-icon" id="ps-${p.id}" onclick="togglePlaystyle(${p.id})" title="${p.label}">`;
-    }).join("");
-}
-
-function togglePlaystyle(id) {
-  if (selectedPlaystyles.includes(id)) {
-    selectedPlaystyles = selectedPlaystyles.filter(x=>x!==id);
-    document.getElementById(`ps-${id}`).classList.remove("selected");
-  } else {
-    selectedPlaystyles.push(id);
-    document.getElementById(`ps-${id}`).classList.add("selected");
-  }
-  updateCard();
-}
-
 function toggleJob(job) {
   if (selectedJobs.includes(job)) {
     selectedJobs = selectedJobs.filter(j=>j!==job);
-    if (mainJob === job) {
-      mainJob = null;
-      document.querySelectorAll(".main-job-select-icon").forEach(el=>el.classList.remove("selected"));
-    }
+    document.getElementById(`icon-${job}`)?.classList.remove("selected");
   } else {
     selectedJobs.push(job);
+    document.getElementById(`icon-${job}`)?.classList.add("selected");
   }
-  updateSelectionUI();
   updateCard();
 }
 
-function updateSelectionUI() {
-  document.querySelectorAll(".job-icon").forEach(el => {
-    const job = el.id.replace("icon-","");
-    el.classList.remove("selected","main-selected");
-    if (job === mainJob) el.classList.add("main-selected");
-    else if (selectedJobs.includes(job)) el.classList.add("selected");
-  });
+function selectAllJobs() {
+  selectedJobs = getAllJobsInOrder();
+  document.querySelectorAll(".job-icon").forEach(el => el.classList.add("selected"));
+  updateCard();
 }
-
-function selectAllJobs() { selectedJobs = getAllJobsInOrder(); updateSelectionUI(); updateCard(); }
 function clearJobs() {
-  selectedJobs = []; mainJob = null;
-  document.querySelectorAll(".main-job-select-icon").forEach(el=>el.classList.remove("selected"));
-  updateSelectionUI(); updateCard();
+  selectedJobs = [];
+  document.querySelectorAll(".job-icon").forEach(el => el.classList.remove("selected"));
+  updateCard();
 }
 
 function toggleJobSection() {
@@ -705,34 +682,7 @@ function toggleJobSection() {
   arrow.innerText = body.classList.contains("collapsed") ? "▶" : "▼";
 }
 
-function renderLineArtSelect() {
-  document.getElementById("lineArtSelect").innerHTML =
-    getAllJobsInOrder().map(job =>
-      `<img src="images/jobs/ffxivjobssvg/${job}.svg"
-            class="lineart-select-icon" id="la-${job}"
-            style="width:22px;height:22px;cursor:pointer;filter:invert(1);opacity:0.4;transition:opacity 0.1s;"
-            onclick="setLineArt('${job}')" title="${job}">`
-    ).join("");
-}
-
-function setLineArt(job) {
-  const la = document.getElementById("lineArt");
-  la.src = `images/jobs/CL/${job.toUpperCase()}.png`;
-  la.style.display = "block";
-  document.querySelectorAll(".lineart-select-icon").forEach(el => {
-    el.style.opacity = "0.4"; el.style.outline = "none";
-  });
-  const sel = document.getElementById(`la-${job}`);
-  if (sel) { sel.style.opacity = "1"; sel.style.outline = "1px solid white"; sel.style.outlineOffset = "1px"; }
-}
-
-function toggleTime(btn) {
-  const t = btn.dataset.time;
-  if (activeTimes.includes(t)) { activeTimes = activeTimes.filter(x=>x!==t); btn.classList.remove("active"); }
-  else { activeTimes.push(t); btn.classList.add("active"); }
-  updateCard();
-}
-
+/* ── 배경 이미지 드래그 ── */
 let bgPosX=50, bgPosY=50, isDragging=false, dragStartX, dragStartY;
 function loadBgImage(event) {
   const file = event.target.files[0]; if (!file) return;
@@ -748,7 +698,8 @@ function loadBgImage(event) {
 function startDrag(e) {
   isDragging=true; dragStartX=e.clientX; dragStartY=e.clientY;
   document.getElementById("bgImage").style.cursor="grabbing";
-  document.addEventListener("mousemove",onDrag); document.addEventListener("mouseup",stopDrag);
+  document.addEventListener("mousemove",onDrag);
+  document.addEventListener("mouseup",stopDrag);
 }
 function onDrag(e) {
   if (!isDragging) return;
@@ -760,42 +711,41 @@ function onDrag(e) {
 }
 function stopDrag() {
   isDragging=false; document.getElementById("bgImage").style.cursor="grab";
-  document.removeEventListener("mousemove",onDrag); document.removeEventListener("mouseup",stopDrag);
+  document.removeEventListener("mousemove",onDrag);
+  document.removeEventListener("mouseup",stopDrag);
 }
 
-function setLayout(mode,btn) {
-  const card=document.getElementById("card");
-  card.classList.remove("vertical","horizontal"); card.classList.add(mode);
-  document.querySelectorAll(".layout-btn").forEach(b=>b.classList.remove("active"));
-  btn.classList.add("active"); fitPreview();
-}
+/* ── 레이아웃 / 피팅 ── */
 function fitPreview() {
-  const card=document.getElementById("card");
-  const container=document.querySelector(".preview-container");
-  const wrapper=document.getElementById("previewWrapper");
-  const cw=container.clientWidth-40, ch=container.clientHeight-40;
-  const cardW=card.classList.contains("vertical")?1080:1920;
-  const cardH=card.classList.contains("vertical")?1920:1080;
-  const scale=Math.min(cw/cardW,ch/cardH);
-  wrapper.style.transform=`scale(${scale})`;
-  wrapper.style.width=cardW+"px"; wrapper.style.height=cardH+"px";
+  const card = document.getElementById("card");
+  const container = document.querySelector(".preview-container");
+  const wrapper = document.getElementById("previewWrapper");
+  const cw = container.clientWidth-40, ch = container.clientHeight-40;
+  const cardW = card.classList.contains("vertical") ? 1080 : 1920;
+  const cardH = card.classList.contains("vertical") ? 1920 : 1080;
+  const scale = Math.min(cw/cardW, ch/cardH);
+  wrapper.style.transform = `scale(${scale})`;
+  wrapper.style.width = cardW+"px";
+  wrapper.style.height = cardH+"px";
 }
+
 function saveImage() {
-  html2canvas(document.getElementById("card"),{scale:2}).then(canvas=>{
-    const link=document.createElement("a");
-    link.download="character_sheet.png"; link.href=canvas.toDataURL(); link.click();
+  html2canvas(document.getElementById("card"), {scale:2}).then(canvas => {
+    const link = document.createElement("a");
+    link.download = "ff14_card.png";
+    link.href = canvas.toDataURL();
+    link.click();
   });
 }
 
+/* ── 초기화 ── */
 renderJobSelect();
-renderMainJobSelect();
-renderLineArtSelect();
-renderPlaystyleSelect();
-drawBarcode();
+drawBarcode("barcodeSvg", 90, 32);
+drawBarcode("bottomBarcodeSvg", 110, 34);
 document.getElementById("cardDate").innerText = getCurrentDate();
 updateCard();
 fitPreview();
-window.addEventListener("resize",fitPreview);
+window.addEventListener("resize", fitPreview);
 </script>
 </body>
 </html>
