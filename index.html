@@ -218,24 +218,26 @@ input[type="file"] { font-size: 11px; color: #888; width: 100%; }
 #jobDisplay {
   position: absolute;
   left: 40px;
-  top: 50%;
-  transform: translateY(-50%);
+  top: 420px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  align-items: center;
+  gap: 6px;
   z-index: 10;
 }
 
 .job-card-icon {
-  width: 56px; height: 56px;
+  width: 40px; height: 40px;
   filter: invert(1);
   display: block;
-  opacity: 0.85;
+  opacity: 0.75;
 }
 
 .job-card-icon.is-main {
+  width: 80px; height: 80px;
   opacity: 1;
-  filter: invert(1) drop-shadow(0 0 6px rgba(245,197,24,0.8));
+  filter: invert(1) drop-shadow(0 0 8px rgba(245,197,24,0.9));
+  margin-bottom: 8px;
 }
 
 /* ── 오른쪽 — 이달의 모델 + 서버 ── */
