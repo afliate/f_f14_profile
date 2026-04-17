@@ -1,0 +1,488 @@
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: #111;
+  color: white;
+  font-family: 'Noto Sans KR', sans-serif;
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* ==========================================
+   왼쪽 패널 ========================================== */
+.panel {
+  width: 260px;
+  min-width: 260px;
+  padding: 14px;
+  background: #0e0e0e;
+  border-right: 1px solid #1e1e1e;
+  overflow-y: auto;
+  height: 100vh;
+  font-family: sans-serif;
+}
+
+.panel-title {
+  font-size: 11px;
+  margin-bottom: 16px;
+  opacity: 0.5;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.section {
+  margin-bottom: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #1e1e1e;
+}
+
+.section h3 {
+  font-size: 10px;
+  opacity: 0.4;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  margin-bottom: 7px;
+}
+
+.field label { font-size: 10px; opacity: 0.5; }
+
+.field input[type="text"], .field select {
+  width: 100%;
+  padding: 5px 7px;
+  background: #1a1a1a;
+  border: 1px solid #2a2a2a;
+  color: white;
+  font-size: 12px;
+  font-family: sans-serif;
+}
+
+.field select option { background: #1a1a1a; }
+
+input[type="file"] { font-size: 11px; color: #888; width: 100%; }
+
+.layout-buttons { display: flex; gap: 6px; }
+.layout-btn {
+  flex: 1; padding: 6px;
+  background: #1a1a1a; color: white;
+  border: 1px solid #333; cursor: pointer; font-size: 11px;
+}
+.layout-btn.active { background: white; color: black; }
+
+/* 인게임과 달라요 체크 */
+.check-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 4px;
+}
+.check-row input[type="checkbox"] { cursor: pointer; }
+.check-row label { font-size: 10px; opacity: 0.5; cursor: pointer; }
+
+/* 직업 선택 */
+.job-section-header {
+  display: flex; align-items: center;
+  justify-content: space-between;
+  cursor: pointer; padding: 4px 0; user-select: none;
+}
+.job-section-header span { font-size: 10px; opacity: 0.4; text-transform: uppercase; letter-spacing: 0.08em; }
+.job-section-body.collapsed { display: none; }
+
+.job-category { margin-bottom: 8px; }
+.job-title { font-size: 10px; opacity: 0.4; margin-bottom: 5px; }
+.job-subrow { display: flex; align-items: center; gap: 5px; margin-bottom: 4px; }
+.job-subtitle { width: 34px; font-size: 9px; opacity: 0.4; flex-shrink: 0; }
+.job-row { display: flex; flex-wrap: wrap; gap: 3px; }
+
+.job-icon {
+  width: 24px; height: 24px;
+  cursor: pointer; filter: invert(1);
+  opacity: 0.35; transition: opacity 0.1s;
+}
+.job-icon:hover { opacity: 0.75; }
+.job-icon.selected { opacity: 1; outline: 1px solid white; outline-offset: 1px; }
+.job-icon.main-selected { opacity: 1; outline: 2px solid #f5c518; outline-offset: 1px; }
+
+/* 플레이스타일 */
+.playstyle-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 4px;
+}
+.ps-icon {
+  width: 28px; height: 28px;
+  cursor: pointer; opacity: 0.3;
+  transition: opacity 0.1s;
+  filter: invert(1);
+}
+.ps-icon:hover { opacity: 0.6; }
+.ps-icon.selected { opacity: 1; outline: 1px solid white; outline-offset: 1px; }
+
+.section button {
+  padding: 6px; background: #1a1a1a;
+  border: 1px solid #333; color: white;
+  cursor: pointer; font-size: 11px; flex: 1;
+}
+.section button:hover { background: #252525; }
+
+.time-btn {
+  padding: 5px 10px; background: #1a1a1a;
+  border: 1px solid #333; color: white;
+  cursor: pointer; font-size: 11px;
+}
+.time-btn.active { background: white; color: black; }
+
+.save-btn {
+  width: 100%; padding: 8px;
+  background: #1a1a1a; border: 1px solid #444;
+  color: white; cursor: pointer; font-size: 12px;
+}
+.save-btn:hover { background: #252525; }
+
+/* ==========================================
+   오른쪽 미리보기 ========================================== */
+.preview-container {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  overflow: hidden;
+  padding: 20px;
+  background: #0a0a0a;
+}
+
+.preview-wrapper { transform-origin: top center; }
+
+/* ==========================================
+   카드 본체 ========================================== */
+.card {
+  position: relative;
+  overflow: hidden;
+  background: #0a0510;
+  font-family: 'Noto Sans KR', sans-serif;
+}
+
+.card.vertical   { width: 1080px; height: 1920px; }
+.card.horizontal { width: 1920px; height: 1080px; }
+
+/* 배경 이미지 */
+.card .bg {
+  position: absolute;
+  inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  z-index: 0;
+}
+
+/* 오버레이 그라데이션 */
+.card-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(0,0,0,0.45) 0%,
+    rgba(0,0,0,0.1) 25%,
+    transparent 45%,
+    rgba(0,0,0,0.55) 72%,
+    rgba(0,0,0,0.88) 100%
+  );
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* ── 상단 바 ── */
+.card-top {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 110px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 36px 52px 0;
+  z-index: 10;
+}
+
+.card-date {
+  font-size: 20px;
+  opacity: 0.55;
+  letter-spacing: 0.12em;
+  font-family: 'Bebas Neue', sans-serif;
+}
+
+/* ── 메인 타이틀 (잡지 이름) ── */
+#mainTitle {
+  position: absolute;
+  top: 38px;
+  left: 0; right: 0;
+  text-align: center;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 210px;
+  line-height: 0.88;
+  letter-spacing: 8px;
+  color: white;
+  opacity: 0.12;
+  z-index: 2;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* ── 바코드 ── */
+.barcode-area {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+}
+.barcode-svg { width: 100px; height: 38px; }
+.barcode-label {
+  font-size: 14px;
+  opacity: 0.35;
+  letter-spacing: 0.08em;
+  font-family: 'Bebas Neue', sans-serif;
+}
+
+/* ── 왼쪽 세로 영역 ── */
+.card-left {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 120px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  padding-bottom: 60px;
+  z-index: 10;
+  gap: 0;
+}
+
+/* 나머지 잡 아이콘들 (가로 2열) */
+#subJobDisplay {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.sub-job-row {
+  display: flex;
+  gap: 5px;
+}
+
+/* 출처 세로 텍스트 */
+.card-credit {
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  font-size: 14px;
+  opacity: 0.3;
+  letter-spacing: 0.06em;
+  font-family: sans-serif;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+
+/* ── 오른쪽 영역 ── */
+.card-right {
+  position: absolute;
+  right: 48px;
+  top: 120px;
+  bottom: 60px;
+  width: 200px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  z-index: 10;
+  gap: 16px;
+}
+
+/* 메인잡 크게 */
+.main-job-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+#mainJobIcon {
+  width: 100px; height: 100px;
+  filter: invert(1) drop-shadow(0 0 10px rgba(245,197,24,0.9));
+  display: none;
+}
+
+.main-job-label {
+  font-size: 15px;
+  opacity: 0.45;
+  letter-spacing: 0.12em;
+  font-family: 'Bebas Neue', sans-serif;
+}
+
+/* 플레이스타일 아이콘들 */
+#playstyleDisplay {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 6px;
+  max-width: 200px;
+}
+
+.ps-card-icon {
+  width: 40px; height: 40px;
+  filter: invert(1);
+  opacity: 0.75;
+}
+
+/* 시간대 */
+#activeTimeDisplay {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  align-items: flex-end;
+  margin-top: auto;
+}
+
+.time-label {
+  font-size: 14px;
+  opacity: 0.35;
+  letter-spacing: 0.1em;
+  font-family: 'Bebas Neue', sans-serif;
+  margin-bottom: 4px;
+}
+
+.time-slot {
+  padding: 3px 12px;
+  border: 1px solid rgba(255,255,255,0.2);
+  font-size: 15px;
+  opacity: 0.3;
+  letter-spacing: 0.06em;
+}
+
+.time-slot.active {
+  border-color: white;
+  opacity: 1;
+  background: rgba(255,255,255,0.08);
+}
+
+/* ── 하단 왼쪽 — 칭호 + 이름 ── */
+.bottom-left {
+  position: absolute;
+  bottom: 180px;
+  left: 130px;
+  z-index: 10;
+}
+
+.ingame-note {
+  font-size: 16px;
+  opacity: 0.4;
+  letter-spacing: 0.04em;
+  margin-bottom: 6px;
+  font-family: sans-serif;
+}
+
+.feature-box {
+  display: inline-block;
+  background: rgba(200,20,20,0.92);
+  padding: 5px 14px;
+  font-size: 20px;
+  font-weight: bold;
+  letter-spacing: 0.08em;
+  margin-bottom: 10px;
+  font-family: sans-serif;
+}
+
+#cardName {
+  font-family: 'Noto Serif KR', serif;
+  font-size: 120px;
+  line-height: 0.88;
+  letter-spacing: 1px;
+  color: white;
+}
+
+/* ── 태그 ── */
+#cardTags {
+  position: absolute;
+  bottom: 110px;
+  left: 130px;
+  z-index: 10;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.tag {
+  border: 1px solid rgba(255,255,255,0.55);
+  padding: 3px 12px;
+  font-size: 16px;
+  letter-spacing: 0.05em;
+  font-family: sans-serif;
+}
+
+/* ── 메모 ── */
+#cardMemo {
+  position: absolute;
+  bottom: 64px;
+  left: 130px;
+  font-size: 17px;
+  opacity: 0.4;
+  letter-spacing: 0.04em;
+  font-family: sans-serif;
+  z-index: 10;
+}
+
+/* ── 라인아트 — 크게, 중앙 하단 ── */
+#lineArt {
+  position: absolute;
+  bottom: -60px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 820px;
+  height: 820px;
+  object-fit: contain;
+  opacity: 0.1;
+  filter: invert(1);
+  z-index: 5;
+  pointer-events: none;
+  display: none;
+}
+
+/* ── 저작권 ── */
+.copyright {
+  position: absolute;
+  bottom: 38px;
+  right: 52px;
+  font-size: 14px;
+  opacity: 0.25;
+  line-height: 1.9;
+  letter-spacing: 0.03em;
+  font-family: sans-serif;
+  text-align: right;
+  z-index: 10;
+}
+
+/* ── 구분선 ── */
+.card-divider-top {
+  position: absolute;
+  top: 108px;
+  left: 48px; right: 48px;
+  height: 1px;
+  background: rgba(255,255,255,0.12);
+  z-index: 10;
+}
+
+.card-divider-bottom {
+  position: absolute;
+  bottom: 158px;
+  left: 120px; right: 48px;
+  height: 1px;
+  background: rgba(255,255,255,0.1);
+  z-index: 10;
+}
