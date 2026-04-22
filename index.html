@@ -322,9 +322,14 @@
   .card-left {
     position: absolute; left: 20px; top: 140px; bottom: 0; width: 140px;
     display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
-    padding-bottom: 60px; z-index: 10;
+    padding-bottom: 30px; z-index: 10;
   }
-  #subJobDisplay { display: flex; flex-direction: column; gap: 8px; align-items: center; margin-bottom: 20px; }
+  #subJobDisplay {  
+    margin-bottom: 0;
+    max-height: 500px;
+    overflow-y: auto;
+    padding-right: 5px;
+  }
   .sub-job-row { display: flex; gap: 8px; }
   .job-card-icon-sub {
     width: 56px; height: 56px;
@@ -334,6 +339,8 @@
   
   .card-credit {
     writing-mode: vertical-rl; text-orientation: mixed;
+    margin-top: 15px;
+    padding-left: 5px;
     font-size: 14px; opacity: 0.25; letter-spacing: 0.06em;
     font-family: sans-serif; line-height: 1.5; white-space: nowrap;
   }
@@ -348,9 +355,9 @@
   .feature-box {
     display: inline-block;
     background: var(--feat-label-bg-title, rgba(245, 195, 95, 0.95));
-    padding: 8px 24px; font-size: 28px; font-weight: bold;
+    padding: 10px 30px; font-size: 34px; font-weight: bold;
     letter-spacing: 0.1em; margin-bottom: 12px;
-    font-family: 'Do Hyeon', sans-serif; color: var(--feat-label-color-title, #111);
+    font-family: var(--label-font, 'Do Hyeon'), sans-serif;
     box-shadow: 0 4px 12px rgba(0,0,0,0.3);
   }
   #nameServerRow { display: flex; align-items: baseline; gap: 20px; flex-wrap: wrap; margin-bottom: 8px; }
@@ -391,7 +398,8 @@
   .ps-section-label-box {
     display: inline-block;
     background: var(--feat-label-bg-ps, rgba(245, 195, 95, 0.95));
-    padding: 6px 18px; font-size: 24px; font-family: 'Do Hyeon', sans-serif;
+    padding: 8px 22px; font-size: 28px;
+    font-family: var(--label-font, 'Do Hyeon'), sans-serif;
     color: var(--feat-label-color-ps, #111); letter-spacing: 0.08em;
     box-shadow: 0 4px 12px rgba(0,0,0,0.3);
   }
@@ -414,7 +422,8 @@
   .feat-label {
     display: inline-block;
     background: var(--feat-label-bg, rgba(245, 195, 95, 0.95));
-    padding: 6px 20px; font-size: 26px; font-family: 'Do Hyeon', sans-serif;
+    padding: 8px 24px; font-size: 30px;
+    font-family: var(--label-font, 'Do Hyeon'), sans-serif;
     color: var(--feat-label-color, #111); letter-spacing: 0.08em; margin-bottom: 4px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.3);
   }
@@ -432,8 +441,8 @@
   .time-slot-card.active { display: inline-block; }
 
   #cardTags {
-    position: absolute; bottom: 100px; left: 60px;
-    z-index: 10; display: flex; flex-wrap: wrap; gap: 8px; max-width: 480px;
+    position: absolute; bottom: 100px; left: 170px;
+    z-index: 10; display: flex; flex-wrap: wrap; gap: 8px; max-width: 420px;
   }
   .tag {
     border: 1px solid rgba(255,255,255,0.6); padding: 5px 18px;
@@ -459,6 +468,42 @@
     font-size: 14px; opacity: 0.25; line-height: 1.8;
     letter-spacing: 0.03em; font-family: sans-serif; text-align: right; z-index: 10;
   }
+
+  /* ========== 라이트 모드 텍스트 색상 보정 ========== */
+  body.light-theme #mainTitle {
+    color: #1a1a1a;
+    text-shadow: 0 0 30px rgba(255,255,255,0.5);
+  }
+  body.light-theme .card-date,
+  body.light-theme .barcode-label,
+  body.light-theme .ingame-note,
+  body.light-theme #serverDisplay,
+  body.light-theme .main-job-label,
+  body.light-theme .ps-display-name,
+  body.light-theme .feat-title,
+  body.light-theme .time-slot-card {
+    color: #1a1a1a !important;
+    opacity: 0.7;
+  }
+  body.light-theme .tag {
+    color: #1a1a1a;
+    border-color: #1a1a1a;
+    background: rgba(255,255,255,0.6);
+  }
+  body.light-theme #cardMemo {
+    color: #1a1a1a;
+    opacity: 0.8;
+    background: rgba(255,255,255,0.3);
+    border-right-color: #1a1a1a;
+  }
+  body.light-theme .card-credit {
+    color: #1a1a1a;
+    opacity: 0.6;
+  }
+  body.light-theme .card-divider-top,
+  body.light-theme .card-divider-bottom {
+    background: rgba(0,0,0,0.1);
+  }
 </style>
 </head>
 <body class="dark-theme">
@@ -467,16 +512,16 @@
 <div class="panel">
   <div class="panel-header">
     <div class="panel-title">FF14 커버 카드 메이커</div>
-    <button class="theme-toggle" id="themeToggleBtn" onclick="toggleTheme()">
-      <span>☀️</span> 라이트 모드
+    <button class="theme-toggle" id="themeToggleBtn" onclick="toggleTheme()" title="라이트/다크 모드 전환">
+        <span id="themeIcon">☽</span>
     </button>
   </div>
   <div class="tab-bar">
-    <button class="tab-btn active" onclick="switchTab('tab-basic',this)">👤 프로필</button>
-    <button class="tab-btn" onclick="switchTab('tab-jobs',this)">⚔️ 직업</button>
-    <button class="tab-btn" onclick="switchTab('tab-style',this)">🎮 플레이스타일</button>
-    <button class="tab-btn" onclick="switchTab('tab-color',this)">🎨 컬러</button>
-    <button class="tab-btn" onclick="switchTab('tab-bg',this)">🖼️ 배경 & 라인아트</button>
+    <button class="tab-btn active" onclick="switchTab('tab-basic',this)">프로필</button>
+    <button class="tab-btn" onclick="switchTab('tab-jobs',this)">직업</button>
+    <button class="tab-btn" onclick="switchTab('tab-style',this)">플레이스타일</button>
+    <button class="tab-btn" onclick="switchTab('tab-color',this)">컬러</button>
+    <button class="tab-btn" onclick="switchTab('tab-bg',this)">배경 & 라인아트</button>
   </div>
 
   <!-- 탭: 프로필 -->
@@ -570,10 +615,10 @@
       <h3>활동 시간대</h3>
       <div style="font-size:10px;opacity:0.4;margin-bottom:8px;">선택된 항목만 카드에 표시됩니다</div>
       <div style="display:flex;gap:5px;flex-wrap:wrap;">
-        <button class="time-btn" data-time="아침" onclick="toggleTime(this)">🌅 아침</button>
-        <button class="time-btn" data-time="점심" onclick="toggleTime(this)">☀️ 점심</button>
-        <button class="time-btn" data-time="저녁" onclick="toggleTime(this)">🌙 저녁</button>
-        <button class="time-btn" data-time="새벽" onclick="toggleTime(this)">🌃 새벽</button>
+        <button class="time-btn" data-time="아침" onclick="toggleTime(this)">아침</button>
+        <button class="time-btn" data-time="점심" onclick="toggleTime(this)">점심</button>
+        <button class="time-btn" data-time="저녁" onclick="toggleTime(this)">저녁</button>
+        <button class="time-btn" data-time="심야" onclick="toggleTime(this)">심야</button>
       </div>
     </div>
     <div class="section">
@@ -587,7 +632,7 @@
   <!-- 탭: 컬러 -->
   <div class="tab-content" id="tab-color">
     <div class="section">
-      <h3>🎖️ 칭호 박스</h3>
+      <h3>🎖️ 칭호 라벨</h3>
       <div class="color-row"><span class="color-label">배경</span><input type="color" id="titleBgColor" value="#f5c35f" onchange="updateTitleColors()"></div>
       <div class="color-row"><span class="color-label">글자</span><input type="color" id="titleTextColor" value="#111111" onchange="updateTitleColors()"></div>
       <div class="color-presets">
@@ -617,6 +662,15 @@
         <div class="color-swatch" style="background:#e05252" onclick="setPsBg('#e05252')"></div>
         <div class="color-swatch" style="background:#52ade0" onclick="setPsBg('#52ade0')"></div>
         <div class="color-swatch" style="background:#ffffff; border:1px solid #ccc;" onclick="setPsBg('#ffffff')"></div>
+      </div>
+    </div>
+    <div class="section">
+      <h3>라벨 폰트</h3>
+      <div class="font-btns">
+        <button class="font-btn label-font-btn active" onclick="setLabelFont('Do Hyeon', this)">도현</button>
+        <button class="font-btn label-font-btn" onclick="setLabelFont('Noto Serif KR', this)">명조</button>
+        <button class="font-btn label-font-btn" onclick="setLabelFont('Bebas Neue', this)">Bebas</button>
+        <button class="font-btn label-font-btn" onclick="setLabelFont('Noto Sans KR', this)">고딕</button>
       </div>
     </div>
   </div>
@@ -705,7 +759,7 @@
   </div>
 </div>
 
- <script>
+<script>
   // ==================== 데이터 ====================
   const jobCategories = {
     "전투": {
@@ -755,15 +809,15 @@
   // ==================== 테마 ====================
   function toggleTheme() {
     const body = document.body;
-    const btn = document.getElementById('themeToggleBtn');
+    const icon = document.getElementById('themeIcon');
     if (body.classList.contains('dark-theme')) {
-      body.classList.remove('dark-theme');
-      body.classList.add('light-theme');
-      btn.innerHTML = '<span>🌙</span> 다크 모드';
+        body.classList.remove('dark-theme');
+        body.classList.add('light-theme');
+        icon.textContent = '☀';
     } else {
-      body.classList.remove('light-theme');
-      body.classList.add('dark-theme');
-      btn.innerHTML = '<span>☀️</span> 라이트 모드';
+        body.classList.remove('light-theme');
+        body.classList.add('dark-theme');
+        icon.textContent = '☽';
     }
   }
 
@@ -839,7 +893,7 @@
       </div>`;
     }).join("");
 
-    document.getElementById("timeSlotsCard").innerHTML = ["아침","점심","저녁","새벽"]
+    document.getElementById("timeSlotsCard").innerHTML = ["아침","점심","저녁","심야"]
       .map(t => `<div class="time-slot-card ${activeTimes.includes(t)?'active':''}">${t}</div>`).join("");
 
     document.getElementById("cardTags").innerHTML = (document.getElementById("tagInput").value||"")
@@ -1004,6 +1058,12 @@
     btn.classList.add("active");
   }
 
+  function setLabelFont(font, btn) {
+    document.documentElement.style.setProperty('--label-font', `'${font}'`);
+    document.querySelectorAll('.label-font-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  }
+
   // ==================== 배경 이미지 드래그 ====================
   function loadBgImage(event) {
     const file = event.target.files[0]; if (!file) return;
@@ -1063,4 +1123,4 @@
   window.addEventListener("resize", fitPreview);
 </script>
 </body>
-</html> 
+</html>  
