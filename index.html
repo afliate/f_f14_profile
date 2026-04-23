@@ -3,10 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <title>FF14 잡지 커버 카드 생성기</title>
-<link href="https://fonts.googleapis.com/css2?family=Do+Hyeon&family=Noto+Serif+KR:wght@400;700;900&family=Bebas+Neue&family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Do+Hyeon&family=Noto+Serif+KR:wght@400;500;700;900&family=Bebas+Neue&family=Noto+Sans+KR:wght@300;400;500;700&family=Black+Han+Sans&family=Gowun+Batang:wght@400;700&family=Nanum+Gothic+Coding:wght@400;700&family=Gugi&display=swap" rel="stylesheet">
 <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 <style>
-  /* ========== 변수 및 기본 레이아웃 ========== */
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
@@ -58,7 +57,7 @@
 
   /* 패널 */
   .panel {
-    width: 300px; min-width: 300px;
+    width: 340px; min-width: 340px;
     background: var(--panel-bg);
     border-right: 1px solid var(--panel-border);
     height: 100vh;
@@ -79,8 +78,8 @@
   }
 
   .panel-title {
-    font-size: 12px;
-    opacity: 0.6;
+    font-size: 13px;
+    opacity: 0.7;
     letter-spacing: 0.1em;
     text-transform: uppercase;
   }
@@ -89,14 +88,14 @@
     background: var(--btn-bg);
     border: 1px solid var(--btn-border);
     color: var(--text-primary);
-    padding: 4px 10px;
-    font-size: 12px;
-    border-radius: 16px;
+    padding: 4px 8px;
+    font-size: 14px;
+    border-radius: 20px;
     cursor: pointer;
     transition: all 0.2s;
     display: flex;
     align-items: center;
-    gap: 4px;
+    gap: 2px;
   }
   .theme-toggle:hover { background: var(--btn-hover-bg); }
 
@@ -196,12 +195,6 @@
   .color-swatch:hover { transform: scale(1.15); }
 
   /* 직업 패널 */
-  .job-section-header {
-    display: flex; align-items: center; justify-content: space-between;
-    cursor: pointer; padding: 4px 0; user-select: none;
-  }
-  .job-section-header span { font-size: 11px; opacity: 0.5; text-transform: uppercase; letter-spacing: 0.08em; }
-  .job-section-body.collapsed { display: none; }
   .job-category { margin-bottom: 12px; }
   .job-title { font-size: 11px; opacity: 0.5; margin-bottom: 6px; }
   .job-subrow { display: flex; align-items: center; gap: 6px; margin-bottom: 5px; }
@@ -250,14 +243,17 @@
     border: none; cursor: pointer; font-size: 14px; font-weight: bold; border-radius: 8px;
   }
 
-  /* 폰트 버튼 */
-  .font-btns { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 6px; }
-  .font-btn {
-    padding: 5px 10px; background: var(--btn-bg); border: 1px solid var(--btn-border);
-    color: var(--text-secondary); cursor: pointer; font-size: 12px; border-radius: 16px;
+  /* 폰트 선택 드롭다운 */
+  .font-select {
+    width: 100%;
+    padding: 8px 10px;
+    background: var(--input-bg);
+    border: 1px solid var(--input-border);
+    color: var(--text-primary);
+    font-size: 13px;
+    border-radius: 8px;
+    margin-top: 6px;
   }
-  .font-btn:hover { background: var(--btn-hover-bg); color: var(--text-primary); }
-  .font-btn.active { background: var(--active-btn-bg); color: var(--active-btn-text); border-color: var(--active-btn-bg); }
 
   /* 미리보기 */
   .preview-container {
@@ -320,29 +316,36 @@
   }
 
   .card-left {
-    position: absolute; left: 20px; top: 140px; bottom: 0; width: 140px;
-    display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
+    position: absolute; left: 20px; top: 140px; bottom: 0; width: 150px;
+    display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-end;
     padding-bottom: 30px; z-index: 10;
   }
-  #subJobDisplay {  
-    margin-bottom: 0;
-    max-height: 500px;
-    overflow-y: auto;
-    padding-right: 5px;
+  #subJobDisplay {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 10px;
+    width: 100%;
   }
-  .sub-job-row { display: flex; gap: 8px; }
+  .sub-job-row { display: contents; }
   .job-card-icon-sub {
-    width: 56px; height: 56px;
+    width: 44px; height: 44px;
     filter: invert(1); opacity: 0.9;
   }
   body.light-theme .job-card-icon-sub { filter: invert(0); }
   
   .card-credit {
     writing-mode: vertical-rl; text-orientation: mixed;
-    margin-top: 15px;
-    padding-left: 5px;
-    font-size: 14px; opacity: 0.25; letter-spacing: 0.06em;
+    margin-top: 5px;
+    margin-left: -10px;
+    padding-left: 0;
+    font-size: 11px; opacity: 0.15; letter-spacing: 0.06em;
     font-family: sans-serif; line-height: 1.5; white-space: nowrap;
+    position: relative;
+    left: -5px;
   }
 
   .bottom-left {
@@ -355,9 +358,10 @@
   .feature-box {
     display: inline-block;
     background: var(--feat-label-bg-title, rgba(245, 195, 95, 0.95));
-    padding: 10px 30px; font-size: 34px; font-weight: bold;
+    padding: 8px 24px; font-size: 34px; font-weight: 500;
     letter-spacing: 0.1em; margin-bottom: 12px;
     font-family: var(--label-font, 'Do Hyeon'), sans-serif;
+    color: var(--feat-label-color-title, #111);
     box-shadow: 0 4px 12px rgba(0,0,0,0.3);
   }
   #nameServerRow { display: flex; align-items: baseline; gap: 20px; flex-wrap: wrap; margin-bottom: 8px; }
@@ -422,7 +426,7 @@
   .feat-label {
     display: inline-block;
     background: var(--feat-label-bg, rgba(245, 195, 95, 0.95));
-    padding: 8px 24px; font-size: 30px;
+    padding: 6px 16px; font-size: 30px;
     font-family: var(--label-font, 'Do Hyeon'), sans-serif;
     color: var(--feat-label-color, #111); letter-spacing: 0.08em; margin-bottom: 4px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.3);
@@ -441,8 +445,8 @@
   .time-slot-card.active { display: inline-block; }
 
   #cardTags {
-    position: absolute; bottom: 100px; left: 170px;
-    z-index: 10; display: flex; flex-wrap: wrap; gap: 8px; max-width: 420px;
+    position: absolute; bottom: 90px; left: 60px;
+    z-index: 10; display: flex; flex-wrap: wrap; gap: 8px; max-width: 480px;
   }
   .tag {
     border: 1px solid rgba(255,255,255,0.6); padding: 5px 18px;
@@ -450,7 +454,7 @@
     background: rgba(0,0,0,0.3); border-radius: 30px;
   }
   #cardMemo {
-    position: absolute; bottom: 100px; right: 60px;
+    position: absolute; bottom: 90px; right: 60px;
     font-size: 20px; opacity: 0.5; letter-spacing: 0.04em;
     font-family: sans-serif; z-index: 10; line-height: 1.6;
     max-width: 480px; text-align: right; white-space: pre-wrap;
@@ -469,11 +473,8 @@
     letter-spacing: 0.03em; font-family: sans-serif; text-align: right; z-index: 10;
   }
 
-  /* ========== 라이트 모드 텍스트 색상 보정 ========== */
-  body.light-theme #mainTitle {
-    color: #1a1a1a;
-    text-shadow: 0 0 30px rgba(255,255,255,0.5);
-  }
+  /* 라이트 모드 텍스트 보정 */
+  body.light-theme #mainTitle { color: #1a1a1a; text-shadow: 0 0 30px rgba(255,255,255,0.5); }
   body.light-theme .card-date,
   body.light-theme .barcode-label,
   body.light-theme .ingame-note,
@@ -481,39 +482,19 @@
   body.light-theme .main-job-label,
   body.light-theme .ps-display-name,
   body.light-theme .feat-title,
-  body.light-theme .time-slot-card {
-    color: #1a1a1a !important;
-    opacity: 0.7;
-  }
-  body.light-theme .tag {
-    color: #1a1a1a;
-    border-color: #1a1a1a;
-    background: rgba(255,255,255,0.6);
-  }
-  body.light-theme #cardMemo {
-    color: #1a1a1a;
-    opacity: 0.8;
-    background: rgba(255,255,255,0.3);
-    border-right-color: #1a1a1a;
-  }
-  body.light-theme .card-credit {
-    color: #1a1a1a;
-    opacity: 0.6;
-  }
-  body.light-theme .card-divider-top,
-  body.light-theme .card-divider-bottom {
-    background: rgba(0,0,0,0.1);
-  }
+  body.light-theme .time-slot-card { color: #1a1a1a !important; opacity: 0.7; }
+  body.light-theme .tag { color: #1a1a1a; border-color: #1a1a1a; background: rgba(255,255,255,0.6); }
+  body.light-theme #cardMemo { color: #1a1a1a; opacity: 0.8; background: rgba(255,255,255,0.3); border-right-color: #1a1a1a; }
+  body.light-theme .card-credit { color: #1a1a1a; opacity: 0.4; }
 </style>
 </head>
 <body class="dark-theme">
 
-<!-- 패널 영역 -->
 <div class="panel">
   <div class="panel-header">
     <div class="panel-title">FF14 커버 카드 메이커</div>
     <button class="theme-toggle" id="themeToggleBtn" onclick="toggleTheme()" title="라이트/다크 모드 전환">
-        <span id="themeIcon">☽</span>
+      <span id="themeIcon">☽</span>
     </button>
   </div>
   <div class="tab-bar">
@@ -524,7 +505,7 @@
     <button class="tab-btn" onclick="switchTab('tab-bg',this)">배경 & 라인아트</button>
   </div>
 
-  <!-- 탭: 프로필 -->
+    <!-- 탭: 프로필 -->
   <div class="tab-content active" id="tab-basic">
     <div class="section">
       <h3>기본 정보</h3>
@@ -561,12 +542,30 @@
 
     <div class="section">
       <h3>닉네임 폰트</h3>
-      <div class="font-btns">
-        <button class="font-btn active" onclick="setNameFont('Do Hyeon', this)">도현</button>
-        <button class="font-btn" onclick="setNameFont('Noto Serif KR', this)">명조</button>
-        <button class="font-btn" onclick="setNameFont('Bebas Neue', this)">Bebas</button>
-        <button class="font-btn" onclick="setNameFont('Noto Sans KR', this)">고딕</button>
-      </div>
+      <select class="font-select" id="nameFontSelect" onchange="setNameFont(this.value)">
+        <option value="Do Hyeon">도현</option>
+        <option value="Noto Serif KR">명조</option>
+        <option value="Bebas Neue">Bebas</option>
+        <option value="Noto Sans KR">고딕</option>
+        <option value="Black Han Sans">블랙한산스</option>
+        <option value="Gowun Batang">고운바탕</option>
+        <option value="Nanum Gothic Coding">나눔고딕코딩</option>
+        <option value="Gugi">구기</option>
+      </select>
+    </div>
+
+    <div class="section">
+      <h3>라벨 폰트</h3>
+      <select class="font-select" id="labelFontSelect" onchange="setLabelFont(this.value)">
+        <option value="Do Hyeon">도현</option>
+        <option value="Noto Serif KR">명조</option>
+        <option value="Bebas Neue">Bebas</option>
+        <option value="Noto Sans KR">고딕</option>
+        <option value="Black Han Sans">블랙한산스</option>
+        <option value="Gowun Batang">고운바탕</option>
+        <option value="Nanum Gothic Coding">나눔고딕코딩</option>
+        <option value="Gugi">구기</option>
+      </select>
     </div>
 
     <div class="section">
@@ -587,7 +586,7 @@
     </div>
   </div>
 
-    <!-- 탭: 직업 -->
+  <!-- 탭: 직업 -->
   <div class="tab-content" id="tab-jobs">
     <div class="section">
       <h3>메인 직업</h3>
@@ -595,21 +594,16 @@
       <div class="main-job-select-grid" id="mainJobSelect"></div>
     </div>
     <div class="section">
-      <div class="job-section-header" onclick="toggleJobSection()">
-        <span>보유 직업</span>
-        <span id="jobArrow" style="font-size:10px;opacity:0.5;">▼</span>
+      <h3>보유 직업</h3>
+      <div style="display:flex;gap:6px;margin:8px 0;">
+        <button onclick="selectAllJobs()">전체 선택</button>
+        <button onclick="clearJobs()">전체 해제</button>
       </div>
-      <div class="job-section-body" id="jobSectionBody">
-        <div style="display:flex;gap:6px;margin:8px 0;">
-          <button onclick="selectAllJobs()">전체 선택</button>
-          <button onclick="clearJobs()">전체 해제</button>
-        </div>
-        <div id="jobSelect"></div>
-      </div>
+      <div id="jobSelect"></div>
     </div>
   </div>
 
-  <!-- 탭: 플레이스타일 -->
+    <!-- 탭: 플레이스타일 -->
   <div class="tab-content" id="tab-style">
     <div class="section">
       <h3>활동 시간대</h3>
@@ -664,18 +658,9 @@
         <div class="color-swatch" style="background:#ffffff; border:1px solid #ccc;" onclick="setPsBg('#ffffff')"></div>
       </div>
     </div>
-    <div class="section">
-      <h3>라벨 폰트</h3>
-      <div class="font-btns">
-        <button class="font-btn label-font-btn active" onclick="setLabelFont('Do Hyeon', this)">도현</button>
-        <button class="font-btn label-font-btn" onclick="setLabelFont('Noto Serif KR', this)">명조</button>
-        <button class="font-btn label-font-btn" onclick="setLabelFont('Bebas Neue', this)">Bebas</button>
-        <button class="font-btn label-font-btn" onclick="setLabelFont('Noto Sans KR', this)">고딕</button>
-      </div>
-    </div>
   </div>
 
-  <!-- 탭: 배경 & 라인아트 -->
+    <!-- 탭: 배경 & 라인아트 -->
   <div class="tab-content" id="tab-bg">
     <div class="section">
       <h3>배경 이미지</h3>
@@ -760,7 +745,7 @@
 </div>
 
 <script>
-  // ==================== 데이터 ====================
+  // 데이터
   const jobCategories = {
     "전투": {
       "탱커": ["pld","war","drk","gnb"],
@@ -789,7 +774,6 @@
   let selectedJobs = [], mainJob = null, activeTimes = [], selectedPlaystyles = [];
   let bgPosX=50, bgPosY=50, isDragging=false, dragStartX, dragStartY;
 
-  // ==================== 유틸리티 ====================
   function getAllJobsInOrder() {
     const all = [];
     Object.values(jobCategories).forEach(cat => {
@@ -806,7 +790,6 @@
     return `${months[now.getMonth()]} ${now.getFullYear()}`;
   }
 
-  // ==================== 테마 ====================
   function toggleTheme() {
     const body = document.body;
     const icon = document.getElementById('themeIcon');
@@ -821,7 +804,6 @@
     }
   }
 
-  // ==================== 탭 전환 ====================
   function switchTab(id, btn) {
     document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
     document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
@@ -829,7 +811,6 @@
     btn.classList.add('active');
   }
 
-  // ==================== 색상 제어 ====================
   function updateTitleColors() {
     const bg = document.getElementById('titleBgColor').value;
     const text = document.getElementById('titleTextColor').value;
@@ -848,12 +829,10 @@
     document.documentElement.style.setProperty('--feat-label-bg-ps', bg);
     document.documentElement.style.setProperty('--feat-label-color-ps', text);
   }
-  
   function setTitleBg(c) { document.getElementById('titleBgColor').value = c; updateTitleColors(); }
   function setFeatBg(c) { document.getElementById('featBgColor').value = c; updateFeatColors(); }
   function setPsBg(c) { document.getElementById('psBgColor').value = c; updatePsColors(); }
 
-  // ==================== 카드 업데이트 ====================
   function updateCard() {
     document.getElementById("mainTitle").innerText = (document.getElementById("titleInput").value || "EORZEAN").toUpperCase();
     document.getElementById("cardDate").innerText = getCurrentDate();
@@ -876,12 +855,9 @@
     const allJobs = getAllJobsInOrder();
     const subJobs = allJobs.filter(j => selectedJobs.includes(j) && j !== mainJob);
     let subHtml = "";
-    for (let i = 0; i < subJobs.length; i += 2) {
-      subHtml += `<div class="sub-job-row">
-        <img class="job-card-icon-sub" src="images/jobs/ffxivjobssvg_meteor/${subJobs[i]}.svg">
-        ${subJobs[i+1] ? `<img class="job-card-icon-sub" src="images/jobs/ffxivjobssvg_meteor/${subJobs[i+1]}.svg">` : ""}
-      </div>`;
-    }
+    subJobs.forEach(job => {
+      subHtml += `<img class="job-card-icon-sub" src="images/jobs/ffxivjobssvg_meteor/${job}.svg">`;
+    });
     document.getElementById("subJobDisplay").innerHTML = subHtml;
 
     document.getElementById("psDisplayRow").innerHTML = selectedPlaystyles.map(id => {
@@ -915,7 +891,6 @@
     svg.innerHTML = html;
   }
 
-  // ==================== 직업 렌더링 ====================
   function renderMainJobSelect() {
     document.getElementById("mainJobSelect").innerHTML = getAllJobsInOrder().map(job =>
       `<img src="images/jobs/ffxivjobssvg/${job}.svg" class="main-job-select-icon" id="mjs-${job}" onclick="setMainJob('${job}')" title="${job}">`
@@ -973,14 +948,7 @@
     document.querySelectorAll(".main-job-select-icon").forEach(el=>el.classList.remove("selected"));
     updateSelectionUI(); updateCard();
   }
-  function toggleJobSection() {
-    const body = document.getElementById("jobSectionBody");
-    const arrow = document.getElementById("jobArrow");
-    body.classList.toggle("collapsed");
-    arrow.innerText = body.classList.contains("collapsed") ? "▶" : "▼";
-  }
 
-  // ==================== 플레이스타일 ====================
   function renderPlaystyleSelect() {
     document.getElementById("playstyleSelect").innerHTML = playstyleList.map(p => {
       const num = String(p.id).padStart(2,"0");
@@ -1019,7 +987,6 @@
     updateCard();
   }
 
-  // ==================== 라인아트 ====================
   function renderLineArtSelect() {
     document.getElementById("lineArtSelect").innerHTML = getAllJobsInOrder().map(job =>
       `<img src="images/jobs/ffxivjobssvg/${job}.svg" class="lineart-select-icon" id="la-${job}"
@@ -1051,20 +1018,14 @@
     if (la.style.display !== "none") la.style.opacity = input.value / 100;
   }
 
-  // ==================== 폰트 ====================
-  function setNameFont(font, btn) {
+  function setNameFont(font) {
     document.documentElement.style.setProperty("--name-font", `'${font}'`);
-    document.querySelectorAll(".font-btn").forEach(b => b.classList.remove("active"));
-    btn.classList.add("active");
   }
 
-  function setLabelFont(font, btn) {
+  function setLabelFont(font) {
     document.documentElement.style.setProperty('--label-font', `'${font}'`);
-    document.querySelectorAll('.label-font-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
   }
 
-  // ==================== 배경 이미지 드래그 ====================
   function loadBgImage(event) {
     const file = event.target.files[0]; if (!file) return;
     const reader = new FileReader();
@@ -1112,7 +1073,7 @@
     });
   }
 
-  // ==================== 초기화 ====================
+  // 초기화
   renderJobSelect();
   renderMainJobSelect();
   renderLineArtSelect();
@@ -1123,4 +1084,4 @@
   window.addEventListener("resize", fitPreview);
 </script>
 </body>
-</html>  
+</html>
