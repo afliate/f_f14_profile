@@ -500,15 +500,15 @@ body.light #mainJobIcon { filter: drop-shadow(0 0 10px rgba(0,0,0,.3)); }
   white-space: nowrap; line-height: 1.4;
 }
 .job-col-side {
-  display: flex; flex-direction: column; gap: 6px;
-  margin-left: 10px;
+  display: flex; flex-direction: column; gap: 8px;
+  margin-left: 12px;
 }
 .job-col-top {
   display: flex; flex-direction: column; gap: 6px;
   margin-bottom: 10px;
 }
 .job-card-icon {
-  width: 36px; height: 36px;
+  width: 42px; height: 42px;
   filter: invert(1); opacity: .85;
 }
 body.light .job-card-icon { filter: none; }
@@ -609,7 +609,7 @@ body.light .job-card-icon { filter: none; }
       <div class="section-title">성향 태그</div>
       <div class="field">
         <label>쉼표로 구분</label>
-        <textarea id="tagInput" oninput="updateCard()" placeholder="파란14, 레이드, 제작" rows="2"></textarea>
+        <textarea id="tagInput" oninput="updateCard()" placeholder="파판14, 스팀, 연성" rows="2"></textarea>
       </div>
     </div>
     <div class="section">
@@ -842,7 +842,7 @@ body.light .job-card-icon { filter: none; }
         <div class="label-box" id="cardLabel1">모험가</div>
         <div class="label-sub" id="cardLabel1Sub"></div>
         <div id="nameBlock">
-          <div id="cardName">캐릭터</div>
+          <div id="cardName">닉네임</div>
           <div id="serverDisplay"></div>
         </div>
         <div class="ingame-note" id="ingameNote">* 인게임과 달라요</div>
@@ -895,7 +895,7 @@ const JOB_CATS = {
 };
 
 const PS_LIST = [
-  {id:1,l:"RP"},{id:2,l:"플이벤트"},{id:3,l:"레벨링"},
+  {id:1,l:"RP"},{id:2,l:"이벤트"},{id:3,l:"레벨링"},
   {id:4,l:"초보자"},{id:5,l:"부담없이"},{id:6,l:"진지공략"},
   {id:9,l:"제작"},{id:10,l:"채광/원예"},{id:11,l:"하우징"},
   {id:12,l:"마물사냥"},{id:13,l:"보물찾기"},{id:14,l:"PvP"},
@@ -1229,7 +1229,7 @@ function updateCard() {
 
   // 보유 직업 (메인잡 제외) → 동적 세로 배치
   const subJobs = allJobs().filter(j=>selJobs.includes(j)&&j!==mainJob);
-  const MAX_PER_COL = 8;
+  const MAX_PER_COL = 9;
   const sideJobs = subJobs.slice(0, MAX_PER_COL);
   const topJobs = subJobs.slice(MAX_PER_COL);
 
