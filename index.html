@@ -3,539 +3,575 @@
 <head>
 <meta charset="UTF-8">
 <title>FF14 잡지 커버 카드 생성기</title>
-<!-- 폰트 12종 -->
-<link href="https://fonts.googleapis.com/css2?family=Do+Hyeon&family=Noto+Serif+KR:wght@400;500;700;900&family=Bebas+Neue&family=Noto+Sans+KR:wght@300;400;500;700&family=Black+Han+Sans&family=Gowun+Batang:wght@400;700&family=Nanum+Gothic+Coding:wght@400;700&family=Gugi&family=Sunflower:wght@300;500;700&family=Jua&family=Gaegu:wght@300;400;700&family=Hi+Melody&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Playfair+Display:wght@400;700;900&family=Bodoni+Moda:opsz,wght@6..96,400;6..96,700;6..96,900&family=Cormorant+Garamond:wght@300;400;600;700&family=Big+Shoulders+Display:wght@400;700;900&family=Josefin+Sans:wght@300;400;600;700&family=Italiana&family=Do+Hyeon&family=Noto+Serif+KR:wght@400;700;900&family=Noto+Sans+KR:wght@300;400;700&family=Black+Han+Sans&family=Gowun+Batang:wght@400;700&family=Gugi&family=Jua&family=Sunflower:wght@300;500;700&family=Hi+Melody&display=swap" rel="stylesheet">
 <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
 
-  :root {
-    --panel-bg: #0e0e0e;
-    --panel-border: #1e1e1e;
-    --text-primary: #ffffff;
-    --text-secondary: rgba(255,255,255,0.5);
-    --input-bg: #1a1a1a;
-    --input-border: #2a2a2a;
-    --btn-bg: #1a1a1a;
-    --btn-border: #333;
-    --btn-hover-bg: #252525;
-    --active-btn-bg: #ffffff;
-    --active-btn-text: #000000;
-    --tab-btn-bg: #1a1a1a;
-    --tab-btn-border: #2a2a2a;
-    --tab-btn-color: rgba(255,255,255,0.45);
-    --preview-bg: #0a0a0a;
-  }
+:root {
+  --panel-bg: #0c0c0c;
+  --panel-border: #1c1c1c;
+  --text-primary: #ffffff;
+  --text-muted: rgba(255,255,255,0.4);
+  --input-bg: #161616;
+  --input-border: #252525;
+  --btn-bg: #161616;
+  --btn-border: #2a2a2a;
+  --btn-hover: #202020;
+  --active-bg: #ffffff;
+  --active-text: #000000;
+  --preview-bg: #080808;
+  --fixed-bg: #0c0c0c;
+  --fixed-border: #1c1c1c;
+  --section-border: #1a1a1a;
+}
 
-  body.light-theme {
-    --panel-bg: #f5f5f7;
-    --panel-border: #ddd;
-    --text-primary: #1a1a1a;
-    --text-secondary: rgba(0,0,0,0.6);
-    --input-bg: #ffffff;
-    --input-border: #ccc;
-    --btn-bg: #e0e0e0;
-    --btn-border: #bbb;
-    --btn-hover-bg: #d0d0d0;
-    --active-btn-bg: #1a1a1a;
-    --active-btn-text: #ffffff;
-    --tab-btn-bg: #e0e0e0;
-    --tab-btn-border: #ccc;
-    --tab-btn-color: rgba(0,0,0,0.5);
-    --preview-bg: #e8e8ec;
-  }
+body.light {
+  --panel-bg: #f0f0f2;
+  --panel-border: #ddd;
+  --text-primary: #111;
+  --text-muted: rgba(0,0,0,0.4);
+  --input-bg: #fff;
+  --input-border: #ccc;
+  --btn-bg: #e5e5e7;
+  --btn-border: #ccc;
+  --btn-hover: #d8d8da;
+  --active-bg: #111;
+  --active-text: #fff;
+  --preview-bg: #e0e0e4;
+  --fixed-bg: #f0f0f2;
+  --fixed-border: #ddd;
+  --section-border: #e0e0e0;
+}
 
-  body {
-    background: #111;
-    color: var(--text-primary);
-    font-family: 'Noto Sans KR', sans-serif;
-    display: flex;
-    height: 100vh;
-    overflow: hidden;
-    margin: 0;
-    transition: background 0.2s;
-  }
+body {
+  background: #0a0a0a;
+  color: var(--text-primary);
+  font-family: 'Noto Sans KR', sans-serif;
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+}
 
-  /* 패널 */
-  .panel {
-    width: 340px; min-width: 340px;
-    background: var(--panel-bg);
-    border-right: 1px solid var(--panel-border);
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    font-family: sans-serif;
-    transition: background 0.2s, border-color 0.2s;
-    color: var(--text-primary);
-  }
+/* ── 패널 ── */
+.panel {
+  width: 320px;
+  min-width: 320px;
+  background: var(--panel-bg);
+  border-right: 1px solid var(--panel-border);
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  transition: background .2s, border-color .2s;
+}
 
-  .panel-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 12px 16px;
-    border-bottom: 1px solid var(--panel-border);
-    flex-shrink: 0;
-  }
+.panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--panel-border);
+  flex-shrink: 0;
+}
+.panel-title { font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--text-muted); }
+.theme-btn {
+  background: var(--btn-bg); border: 1px solid var(--btn-border);
+  color: var(--text-primary); padding: 4px 10px; border-radius: 20px;
+  cursor: pointer; font-size: 13px; transition: background .15s;
+}
+.theme-btn:hover { background: var(--btn-hover); }
 
-  .panel-title {
-    font-size: 13px;
-    opacity: 0.7;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-  }
+/* 이미지 업로드 고정 */
+.fixed-upload {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--panel-border);
+  flex-shrink: 0;
+  background: var(--fixed-bg);
+}
+.fixed-upload label { font-size: 10px; color: var(--text-muted); display: block; margin-bottom: 5px; letter-spacing: .08em; text-transform: uppercase; }
+.upload-btn-wrap { position: relative; }
+.upload-btn-wrap input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; }
+.upload-visual {
+  display: flex; align-items: center; gap: 8px;
+  background: var(--input-bg); border: 1px dashed var(--input-border);
+  padding: 8px 12px; border-radius: 6px; cursor: pointer;
+  transition: border-color .15s;
+  font-size: 12px; color: var(--text-muted);
+}
+.upload-visual:hover { border-color: rgba(255,255,255,0.3); }
+.upload-visual .icon { font-size: 16px; }
 
-  .theme-toggle {
-    background: var(--btn-bg);
-    border: 1px solid var(--btn-border);
-    color: var(--text-primary);
-    padding: 4px 8px;
-    font-size: 14px;
-    border-radius: 20px;
-    cursor: pointer;
-    transition: all 0.2s;
-    display: flex;
-    align-items: center;
-    gap: 2px;
-  }
-  .theme-toggle:hover { background: var(--btn-hover-bg); }
+/* 탭바 */
+.tab-bar {
+  display: flex;
+  padding: 8px 8px 0;
+  gap: 2px;
+  border-bottom: 1px solid var(--panel-border);
+  flex-shrink: 0;
+}
+.tab-btn {
+  flex: 1; padding: 7px 4px;
+  background: transparent; border: none; border-bottom: 2px solid transparent;
+  color: var(--text-muted); cursor: pointer; font-size: 11px;
+  font-family: 'Noto Sans KR', sans-serif;
+  transition: color .12s, border-color .12s;
+  letter-spacing: .04em;
+}
+.tab-btn:hover { color: var(--text-primary); }
+.tab-btn.active { color: var(--text-primary); border-bottom-color: var(--text-primary); }
 
-  .tab-bar {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 2px;
-    padding: 8px 8px 4px;
-    border-bottom: 1px solid var(--panel-border);
-    flex-shrink: 0;
-  }
+/* 탭 내용 */
+.tab-content { display: none; flex: 1; overflow-y: auto; padding: 14px; }
+.tab-content.active { display: block; }
 
-  .tab-btn {
-    padding: 6px 12px;
-    background: var(--tab-btn-bg);
-    border: 1px solid var(--tab-btn-border);
-    color: var(--tab-btn-color);
-    cursor: pointer;
-    font-size: 11px;
-    font-family: sans-serif;
-    transition: all 0.12s;
-    border-radius: 20px;
-    flex: 0 1 auto;
-    white-space: nowrap;
-  }
-  .tab-btn:hover { background: var(--btn-hover-bg); color: var(--text-primary); }
-  .tab-btn.active { background: var(--active-btn-bg); color: var(--active-btn-text); border-color: var(--active-btn-bg); }
+.section {
+  margin-bottom: 18px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid var(--section-border);
+}
+.section:last-child { border-bottom: none; margin-bottom: 0; }
+.section-title {
+  font-size: 10px; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--text-muted); margin-bottom: 10px;
+}
 
-  .tab-content {
-    display: none;
-    flex: 1;
-    overflow-y: auto;
-    padding: 16px 18px;
-  }
-  .tab-content.active { display: block; }
+.field { display: flex; flex-direction: column; gap: 4px; margin-bottom: 10px; }
+.field:last-child { margin-bottom: 0; }
+.field label { font-size: 10px; color: var(--text-muted); letter-spacing: .06em; }
+.field input[type="text"],
+.field select,
+.field textarea {
+  width: 100%; padding: 7px 10px;
+  background: var(--input-bg); border: 1px solid var(--input-border);
+  color: var(--text-primary); font-size: 12px;
+  font-family: 'Noto Sans KR', sans-serif;
+  border-radius: 6px; transition: border-color .15s;
+}
+.field input:focus, .field select:focus, .field textarea:focus {
+  outline: none; border-color: rgba(255,255,255,0.3);
+}
+.field textarea { resize: vertical; min-height: 60px; line-height: 1.5; }
+.field select option { background: #161616; }
 
-  .section {
-    margin-bottom: 20px;
-    padding-bottom: 20px;
-    border-bottom: 1px solid var(--panel-border);
-  }
-  .section:last-child { border-bottom: none; }
-  .section h3 {
-    font-size: 12px;
-    opacity: 0.5;
-    margin-bottom: 12px;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: var(--text-primary);
-  }
+.row2 { display: flex; gap: 8px; }
+.row2 .field { flex: 1; margin-bottom: 0; }
 
-  .field {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-    margin-bottom: 12px;
-  }
-  .field label { font-size: 11px; opacity: 0.6; color: var(--text-primary); }
-  .field input[type="text"],
-  .field input[type="color"],
-  .field input[type="range"],
-  .field select,
-  .field textarea {
-    width: 100%;
-    padding: 8px 10px;
-    background: var(--input-bg);
-    border: 1px solid var(--input-border);
-    color: var(--text-primary);
-    font-size: 13px;
-    font-family: sans-serif;
-    border-radius: 8px;
-    transition: background 0.2s, border-color 0.2s, color 0.2s;
-  }
-  .field textarea { resize: vertical; min-height: 70px; line-height: 1.5; }
-  .field input[type="color"] { height: 40px; padding: 4px; }
-  .field select option { background: var(--input-bg); color: var(--text-primary); }
-  input[type="file"] { font-size: 12px; color: var(--text-secondary); width: 100%; }
-  .check-row {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-top: 6px;
-  }
-  .check-row input[type="checkbox"] { cursor: pointer; }
-  .check-row label { font-size: 11px; opacity: 0.6; cursor: pointer; }
+.check-row { display: flex; align-items: center; gap: 7px; margin-top: 4px; }
+.check-row input { cursor: pointer; }
+.check-row label { font-size: 11px; color: var(--text-muted); cursor: pointer; }
 
-  /* 색상 프리셋 */
-  .color-row { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
-  .color-label { width: 50px; font-size: 11px; opacity: 0.6; }
-  .color-presets { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
-  .color-swatch {
-    width: 28px; height: 28px;
-    cursor: pointer;
-    border: 1px solid var(--input-border);
-    border-radius: 6px;
-    transition: transform 0.1s;
-  }
-  .color-swatch:hover { transform: scale(1.15); }
+/* 저장 버튼 고정 */
+.fixed-save {
+  padding: 12px 14px;
+  border-top: 1px solid var(--panel-border);
+  flex-shrink: 0;
+  background: var(--fixed-bg);
+}
+.save-btn {
+  width: 100%; padding: 11px;
+  background: var(--active-bg); color: var(--active-text);
+  border: none; cursor: pointer; font-size: 13px; font-weight: 700;
+  border-radius: 7px; letter-spacing: .06em;
+  transition: opacity .15s;
+  font-family: 'Noto Sans KR', sans-serif;
+}
+.save-btn:hover { opacity: .85; }
 
-  /* 직업 패널 */
-  .job-category { margin-bottom: 12px; }
-  .job-title { font-size: 11px; opacity: 0.5; margin-bottom: 6px; }
-  .job-subrow { display: flex; align-items: center; gap: 6px; margin-bottom: 5px; }
-  .job-subtitle { width: 40px; font-size: 10px; opacity: 0.5; flex-shrink: 0; }
-  .job-row { display: flex; flex-wrap: wrap; gap: 4px; }
-  
-  .job-icon {
-    width: 28px; height: 28px; cursor: pointer;
-    filter: invert(1); opacity: 0.4; transition: opacity 0.1s;
-  }
-  body.light-theme .job-icon { filter: invert(0); }
-  .job-icon:hover { opacity: 0.8; }
-  .job-icon.selected { opacity: 1; outline: 1px solid var(--text-primary); outline-offset: 1px; }
-  .job-icon.main-selected { opacity: 1; outline: 2px solid #f5c518; outline-offset: 1px; }
-  
-  .main-job-select-grid { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 6px; }
-  .main-job-select-icon {
-    width: 32px; height: 32px; cursor: pointer;
-    filter: invert(1); opacity: 0.4; transition: opacity 0.1s;
-  }
-  body.light-theme .main-job-select-icon { filter: invert(0); }
-  .main-job-select-icon:hover { opacity: 0.8; }
-  .main-job-select-icon.selected { opacity: 1; outline: 2px solid #f5c518; outline-offset: 1px; }
+/* 직업 아이콘 */
+.job-category { margin-bottom: 12px; }
+.job-cat-title { font-size: 10px; color: var(--text-muted); margin-bottom: 6px; letter-spacing: .06em; }
+.job-subrow { display: flex; align-items: center; gap: 5px; margin-bottom: 4px; }
+.job-sub-label { width: 36px; font-size: 10px; color: var(--text-muted); flex-shrink: 0; }
+.job-row { display: flex; flex-wrap: wrap; gap: 3px; }
 
-  /* 플레이스타일 */
-  .playstyle-grid { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 6px; }
-  .ps-icon { width: 32px; height: 32px; cursor: pointer; opacity: 0.4; transition: opacity 0.1s; }
-  .ps-icon:hover { opacity: 0.8; }
-  .ps-icon.selected { opacity: 1; outline: 1px solid white; outline-offset: 1px; }
-  .ps-icon.maxed { opacity: 0.1 !important; cursor: not-allowed; }
-  .ps-counter { font-size: 11px; opacity: 0.5; margin-bottom: 6px; }
-  .ps-counter.warn { color: #f5c35f; opacity: 1; }
+.job-icon {
+  width: 26px; height: 26px; cursor: pointer;
+  filter: invert(1); opacity: .35; transition: opacity .1s;
+  border-radius: 2px;
+}
+body.light .job-icon { filter: none; }
+.job-icon:hover { opacity: .75; }
+.job-icon.selected { opacity: 1; outline: 1px solid rgba(255,255,255,.6); outline-offset: 1px; }
+.job-icon.main-sel { opacity: 1; outline: 2px solid #f5c518; outline-offset: 1px; }
 
-  .time-btn {
-    padding: 6px 12px; background: var(--btn-bg); border: 1px solid var(--btn-border);
-    color: var(--text-primary); cursor: pointer; font-size: 12px; border-radius: 20px;
-  }
-  .time-btn.active { background: var(--active-btn-bg); color: var(--active-btn-text); }
-  
-  .section button {
-    padding: 8px; background: var(--btn-bg); border: 1px solid var(--btn-border);
-    color: var(--text-primary); cursor: pointer; font-size: 12px; border-radius: 8px;
-  }
-  .save-btn {
-    width: 100%; padding: 12px; background: var(--active-btn-bg); color: var(--active-btn-text);
-    border: none; cursor: pointer; font-size: 14px; font-weight: bold; border-radius: 8px;
-  }
+.main-job-grid { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
+.main-job-icon {
+  width: 30px; height: 30px; cursor: pointer;
+  filter: invert(1); opacity: .35; transition: opacity .1s;
+}
+body.light .main-job-icon { filter: none; }
+.main-job-icon:hover { opacity: .75; }
+.main-job-icon.selected { opacity: 1; outline: 2px solid #f5c518; outline-offset: 1px; }
 
-  /* 폰트 버튼 그리드 */
-  .font-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 4px;
-    margin-top: 8px;
-  }
-  .font-btn {
-    padding: 6px 4px;
-    background: var(--btn-bg);
-    border: 1px solid var(--btn-border);
-    color: var(--text-secondary);
-    cursor: pointer;
-    font-size: 11px;
-    border-radius: 6px;
-    text-align: center;
-    transition: all 0.1s;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-  .font-btn:hover { background: var(--btn-hover-bg); color: var(--text-primary); }
-  .font-btn.active { background: var(--active-btn-bg); color: var(--active-btn-text); border-color: var(--active-btn-bg); }
-  .font-support { font-size: 9px; opacity: 0.5; margin-left: 2px; }
+.btn-row { display: flex; gap: 6px; margin-bottom: 10px; }
+.mini-btn {
+  padding: 5px 10px; background: var(--btn-bg); border: 1px solid var(--btn-border);
+  color: var(--text-primary); cursor: pointer; font-size: 11px; border-radius: 5px;
+  transition: background .12s; font-family: 'Noto Sans KR', sans-serif;
+}
+.mini-btn:hover { background: var(--btn-hover); }
 
-  /* 미리보기 */
-  .preview-container {
-    flex: 1; display: flex; justify-content: center; align-items: flex-start;
-    overflow: hidden; padding: 24px; background: var(--preview-bg);
-  }
-  .preview-wrapper { transform-origin: top center; }
+/* 라인아트 */
+.lineart-grid { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
+.la-icon {
+  width: 26px; height: 26px; cursor: pointer;
+  filter: invert(1); opacity: .35; transition: opacity .1s;
+}
+body.light .la-icon { filter: none; }
+.la-icon:hover { opacity: .75; }
+.la-icon.selected { opacity: 1; outline: 1px solid rgba(255,255,255,.6); outline-offset: 1px; }
 
-  /* 카드 */
-  .card {
-    position: relative; overflow: hidden;
-    background: #0a0510; font-family: 'Noto Sans KR', sans-serif;
-  }
-  .card.vertical { width: 1080px; height: 1920px; }
+/* 플레이스타일 */
+.ps-grid { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
+.ps-icon {
+  width: 30px; height: 30px; cursor: pointer;
+  opacity: .35; transition: opacity .1s; border-radius: 4px;
+}
+.ps-icon:hover { opacity: .75; }
+.ps-icon.selected { opacity: 1; outline: 1px solid rgba(255,255,255,.6); outline-offset: 1px; }
+.ps-icon.maxed { opacity: .1 !important; cursor: not-allowed; }
+.ps-count { font-size: 10px; color: var(--text-muted); margin-bottom: 4px; }
+.ps-count.warn { color: #f5c35f; }
 
-  .card .bg {
-    position: absolute; inset: 0; width: 100%; height: 100%;
-    object-fit: cover; object-position: center top; z-index: 0;
-  }
-  .card-overlay {
-    position: absolute; inset: 0;
-    background: linear-gradient(
-      to bottom,
-      rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.15) 30%,
-      transparent 50%, rgba(0,0,0,0.7) 75%, rgba(0,0,0,0.95) 100%
-    );
-    z-index: 1; pointer-events: none;
-  }
-  body.light-theme .card-overlay {
-    background: linear-gradient(
-      to bottom,
-      rgba(255,255,255,0.2) 0%,
-      transparent 40%,
-      rgba(0,0,0,0.3) 75%,
-      rgba(0,0,0,0.7) 100%
-    );
-  }
+/* 시간대 */
+.time-row { display: flex; gap: 5px; flex-wrap: wrap; }
+.time-btn {
+  padding: 5px 12px; background: var(--btn-bg); border: 1px solid var(--btn-border);
+  color: var(--text-primary); cursor: pointer; font-size: 11px; border-radius: 20px;
+  transition: all .12s; font-family: 'Noto Sans KR', sans-serif;
+}
+.time-btn:hover { background: var(--btn-hover); }
+.time-btn.active { background: var(--active-bg); color: var(--active-text); border-color: var(--active-bg); }
 
-  .card-top {
-    position: absolute; top: 0; left: 0; right: 0; height: 120px;
-    display: flex; align-items: flex-start; justify-content: space-between;
-    padding: 40px 60px 0; z-index: 10;
-  }
-  .card-date { font-size: 22px; opacity: 0.5; letter-spacing: 0.12em; font-family: 'Bebas Neue', sans-serif; }
-  .barcode-area { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
-  .barcode-svg { width: 110px; height: 42px; }
-  .barcode-label { font-size: 15px; opacity: 0.35; letter-spacing: 0.08em; font-family: 'Bebas Neue', sans-serif; }
+/* 컬러 */
+.color-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+.color-lbl { font-size: 10px; color: var(--text-muted); width: 40px; }
+.color-row input[type="color"] { width: 48px; height: 32px; padding: 2px; border-radius: 5px; border: 1px solid var(--input-border); background: var(--input-bg); cursor: pointer; }
+.swatches { display: flex; gap: 5px; margin-top: 4px; flex-wrap: wrap; }
+.swatch { width: 24px; height: 24px; border-radius: 5px; cursor: pointer; border: 1px solid var(--input-border); transition: transform .1s; }
+.swatch:hover { transform: scale(1.15); }
 
-  #mainTitle {
-    position: absolute; top: 40px; left: 0; right: 0;
-    text-align: center; font-family: 'Bebas Neue', sans-serif;
-    font-size: 240px; line-height: 0.85; letter-spacing: 12px;
-    color: white; opacity: 0.8; z-index: 2; pointer-events: none; user-select: none;
-    text-shadow: 0 0 30px rgba(0,0,0,0.8);
-  }
+/* 폰트 */
+.font-tabs { display: flex; gap: 4px; margin-bottom: 10px; }
+.font-tab {
+  padding: 5px 12px; background: var(--btn-bg); border: 1px solid var(--btn-border);
+  color: var(--text-muted); cursor: pointer; font-size: 11px; border-radius: 20px;
+  transition: all .12s; font-family: 'Noto Sans KR', sans-serif;
+}
+.font-tab.active { background: var(--active-bg); color: var(--active-text); border-color: var(--active-bg); }
+.font-section { display: none; }
+.font-section.active { display: block; }
+.font-target-label { font-size: 10px; color: var(--text-muted); margin: 10px 0 6px; letter-spacing: .06em; text-transform: uppercase; }
 
-  .card-divider-top {
-    position: absolute; top: 260px; left: 60px; right: 60px; height: 2px;
-    background: linear-gradient(to right, transparent, rgba(255,255,255,0.4), transparent); z-index: 10;
-  }
+.font-list { display: flex; flex-direction: column; gap: 3px; }
+.font-item {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 10px; background: var(--input-bg); border: 1px solid var(--input-border);
+  border-radius: 6px; cursor: pointer; transition: border-color .12s;
+}
+.font-item:hover { border-color: rgba(255,255,255,0.25); }
+.font-item.active { border-color: rgba(255,255,255,0.6); background: rgba(255,255,255,0.05); }
+body.light .font-item.active { border-color: rgba(0,0,0,0.5); background: rgba(0,0,0,0.04); }
+.font-preview { font-size: 18px; color: var(--text-primary); }
+.font-name { font-size: 10px; color: var(--text-muted); font-family: 'Noto Sans KR', sans-serif !important; }
 
-  .card-left {
-    position: absolute; left: 20px; top: 140px; bottom: 0; width: 150px;
-    display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-end;
-    padding-bottom: 30px; z-index: 10;
-  }
-  #subJobDisplay {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 6px;
-    justify-items: start;
-    width: 100%;
-    margin-bottom: 10px;
-  }
-  .job-card-icon-sub {
-    width: 48px; height: 48px;
-    filter: invert(1); opacity: 0.9;
-  }
-  body.light-theme .job-card-icon-sub { filter: invert(0); }
-  
-  .card-credit {
-    writing-mode: vertical-rl; text-orientation: mixed;
-    margin-top: 5px;
-    margin-left: -10px;
-    padding-left: 0;
-    font-size: 11px; opacity: 0.15; letter-spacing: 0.06em;
-    font-family: sans-serif; line-height: 1.5; white-space: nowrap;
-    position: relative;
-    left: -5px;
-  }
+/* 불투명도 슬라이더 */
+.slider-row { display: flex; align-items: center; gap: 8px; }
+.slider-row input[type="range"] { flex: 1; }
+.slider-val { font-size: 11px; color: var(--text-muted); width: 32px; text-align: right; }
 
-  .bottom-left {
-    position: absolute; top: 280px; left: 60px; z-index: 7;
-  }
-  .ingame-note {
-    font-size: 18px; opacity: 0.45; letter-spacing: 0.04em;
-    margin-bottom: 8px; font-family: sans-serif;
-  }
-  .feature-box {
-    display: inline-block;
-    background: var(--feat-label-bg-title, rgba(245, 195, 95, 0.95));
-    padding: 8px 24px; font-size: 34px; font-weight: 500;
-    letter-spacing: 0.1em; margin-bottom: 12px;
-    font-family: var(--label-font, 'Do Hyeon'), sans-serif;
-    color: var(--feat-label-color-title, #111);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-  }
-  #nameServerRow { display: flex; align-items: baseline; gap: 20px; flex-wrap: wrap; margin-bottom: 8px; }
-  #cardName {
-    font-family: var(--name-font, 'Do Hyeon'), sans-serif;
-    font-size: 120px; line-height: 0.9; letter-spacing: 4px; color: white;
-    text-shadow: 0 4px 30px rgba(0,0,0,0.9), 0 0 60px rgba(0,0,0,0.8);
-  }
-  #serverDisplay {
-    font-size: 30px; opacity: 0.55; letter-spacing: 0.08em;
-    font-family: 'Bebas Neue', sans-serif;
-  }
+/* ── 카드 ── */
+.preview-area {
+  flex: 1; display: flex; justify-content: center; align-items: flex-start;
+  overflow: hidden; padding: 24px; background: var(--preview-bg);
+}
+.preview-wrap { transform-origin: top center; }
 
-  .card-right {
-    position: absolute; right: 60px; top: 300px; bottom: 80px; width: 260px;
-    display: flex; flex-direction: column; align-items: flex-end; z-index: 10;
-  }
-  .main-job-area {
-    display: flex; flex-direction: column; align-items: center;
-    gap: 8px; margin-bottom: 24px;
-  }
-  #mainJobIcon {
-    width: 130px; height: 130px;
-    filter: invert(1) drop-shadow(0 0 20px rgba(255,255,255,0.7));
-    display: none;
-  }
-  body.light-theme #mainJobIcon { filter: drop-shadow(0 0 10px rgba(0,0,0,0.3)); }
-  
-  .main-job-label {
-    font-size: 16px; opacity: 0.4; letter-spacing: 0.14em;
-    font-family: 'Bebas Neue', sans-serif;
-  }
+.card {
+  position: relative; overflow: hidden;
+  width: 1080px; height: 1920px;
+  background: #060408;
+  font-family: 'Noto Sans KR', sans-serif;
+}
 
-  .ps-section {
-    margin-top: 20px; display: flex; flex-direction: column;
-    gap: 12px; align-items: flex-end;
-  }
-  .ps-section-label-box {
-    display: inline-block;
-    background: var(--feat-label-bg-ps, rgba(245, 195, 95, 0.95));
-    padding: 8px 18px; font-size: 26px;
-    font-family: var(--label-font, 'Do Hyeon'), sans-serif;
-    color: var(--feat-label-color-ps, #111); letter-spacing: 0.08em;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-    white-space: nowrap;
-  }
-  .ps-display-row {
-    display: flex; flex-wrap: wrap; gap: 12px; margin-top: 6px;
-    justify-content: flex-end;
-  }
-  .ps-display-item { display: flex; flex-direction: column; align-items: center; gap: 4px; }
-  .ps-display-icon { width: 48px; height: 48px; opacity: 0.95; }
-  .ps-display-name {
-    font-size: 14px; opacity: 0.7; font-family: 'Noto Sans KR', sans-serif;
-    white-space: nowrap;
-  }
+.card .bg {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  object-fit: cover; object-position: center top; z-index: 0;
+}
+.card-overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.1) 28%,
+    transparent 48%, rgba(0,0,0,0.65) 74%, rgba(0,0,0,0.96) 100%
+  );
+  z-index: 1; pointer-events: none;
+}
 
-  .card-features-left {
-    position: absolute; top: 560px; left: 60px;
-    z-index: 8; display: flex; flex-direction: column; gap: 40px; max-width: 560px;
-  }
-  .feature-block { display: flex; flex-direction: column; gap: 8px; }
-  .feat-label {
-    display: inline-block;
-    background: var(--feat-label-bg, rgba(245, 195, 95, 0.95));
-    padding: 6px 16px; font-size: 30px;
-    font-family: var(--label-font, 'Do Hyeon'), sans-serif;
-    color: var(--feat-label-color, #111); letter-spacing: 0.08em; margin-bottom: 4px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-  }
-  .feat-title {
-    font-size: 52px; line-height: 1.1; font-family: 'Do Hyeon', sans-serif;
-    color: white; text-shadow: 2px 4px 16px rgba(0,0,0,0.7);
-  }
+/* 상단 */
+.card-top {
+  position: absolute; top: 0; left: 0; right: 0;
+  display: flex; align-items: flex-start; justify-content: space-between;
+  padding: 36px 40px 0; z-index: 10;
+}
+.card-date {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 20px; letter-spacing: .14em; opacity: .5; color: white;
+}
+.barcode-wrap { display: flex; flex-direction: column; align-items: flex-end; gap: 3px; }
+.barcode-svg { width: 100px; height: 38px; }
+.barcode-lbl {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 13px; opacity: .3; letter-spacing: .1em; color: white;
+}
 
-  .time-slots-card { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 8px; }
-  .time-slot-card {
-    padding: 6px 20px; border: 1px solid white;
-    font-size: 22px; letter-spacing: 0.06em; font-family: 'Do Hyeon', sans-serif;
-    background: rgba(255,255,255,0.1); display: none;
-  }
-  .time-slot-card.active { display: inline-block; }
+/* 잡지 타이틀 */
+#mainTitle {
+  position: absolute; top: 32px; left: 0; right: 0; text-align: center;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 230px; line-height: .85; letter-spacing: 10px;
+  color: white; opacity: .82; z-index: 2;
+  pointer-events: none; user-select: none;
+  text-shadow: 0 0 40px rgba(0,0,0,0.7);
+}
 
-  #cardTags {
-    position: absolute; bottom: 90px; left: 60px;
-    z-index: 10; display: flex; flex-wrap: wrap; gap: 8px; max-width: 480px;
-  }
-  .tag {
-    border: 1px solid rgba(255,255,255,0.6); padding: 5px 18px;
-    font-size: 18px; letter-spacing: 0.06em; font-family: sans-serif;
-    background: rgba(0,0,0,0.3); border-radius: 30px;
-  }
-  #cardMemo {
-    position: absolute; bottom: 90px; right: 60px;
-    font-size: 20px; opacity: 0.5; letter-spacing: 0.04em;
-    font-family: sans-serif; z-index: 10; line-height: 1.6;
-    max-width: 480px; text-align: right; white-space: pre-wrap;
-    background: rgba(0,0,0,0.2); padding: 14px 22px;
-    border-right: 3px solid rgba(255,255,255,0.4); border-radius: 12px 0 0 12px;
-  }
+.card-divider {
+  position: absolute; left: 0; right: 0; height: 1px;
+  background: linear-gradient(to right, transparent, rgba(255,255,255,.35), transparent);
+  z-index: 10;
+}
+.card-divider.top { top: 248px; }
 
-  #lineArt {
-    position: absolute; bottom: -40px; left: 50%; transform: translateX(-50%);
-    width: 640px; height: 640px; object-fit: contain;
-    filter: invert(1); z-index: 5; pointer-events: none; display: none;
-  }
+/* 왼쪽 - 칭호/이름/서버 블록 */
+.card-left-info {
+  position: absolute; top: 270px; left: 0; z-index: 10;
+}
 
-  /* 라이트 모드 텍스트 보정 */
-  body.light-theme #mainTitle { color: #1a1a1a; text-shadow: 0 0 30px rgba(255,255,255,0.5); }
-  body.light-theme .card-date,
-  body.light-theme .barcode-label,
-  body.light-theme .ingame-note,
-  body.light-theme #serverDisplay,
-  body.light-theme .main-job-label,
-  body.light-theme .ps-display-name,
-  body.light-theme .feat-title,
-  body.light-theme .time-slot-card { color: #1a1a1a !important; opacity: 0.7; }
-  body.light-theme .tag { color: #1a1a1a; border-color: #1a1a1a; background: rgba(255,255,255,0.6); }
-  body.light-theme #cardMemo { color: #1a1a1a; opacity: 0.8; background: rgba(255,255,255,0.3); border-right-color: #1a1a1a; }
-  body.light-theme .card-credit { color: #1a1a1a; opacity: 0.5; }
-  body.light-theme .lineart-select-icon { filter: invert(0); }
+.label-box {
+  display: inline-flex; align-items: center;
+  padding: 6px 20px 6px 40px;
+  font-family: var(--label-font, 'Do Hyeon'), sans-serif;
+  font-size: 30px; letter-spacing: .08em;
+  box-shadow: 4px 4px 16px rgba(0,0,0,0.4);
+  background: var(--label1-bg, rgba(245,195,95,0.95));
+  color: var(--label1-text, #111);
+  margin-bottom: 14px;
+  position: relative;
+}
+.label-sub {
+  font-size: 18px; color: rgba(255,255,255,.6);
+  padding: 4px 0 10px 40px;
+  font-family: var(--info-font, 'Do Hyeon'), sans-serif;
+  letter-spacing: .04em;
+  display: none;
+}
+.label-sub.visible { display: block; }
+
+#nameBlock {
+  padding-left: 40px;
+  display: flex; align-items: baseline; gap: 16px; flex-wrap: wrap;
+}
+#cardName {
+  font-family: var(--name-font, 'Do Hyeon'), sans-serif;
+  font-size: 110px; line-height: .9; letter-spacing: 2px; color: white;
+  text-shadow: 0 4px 30px rgba(0,0,0,0.9);
+}
+#serverDisplay {
+  font-family: var(--info-font, 'Do Hyeon'), sans-serif;
+  font-size: 28px; opacity: .5; letter-spacing: .06em; color: white;
+}
+.ingame-note {
+  font-size: 16px; opacity: .4; letter-spacing: .04em;
+  font-family: var(--info-font, 'Do Hyeon'), sans-serif; color: white;
+  padding-left: 40px; margin-top: 6px; display: none;
+}
+.ingame-note.visible { display: block; }
+
+/* 오른쪽 - 메인잡 + 플레이스타일 */
+.card-right {
+  position: absolute; right: 0; top: 280px; bottom: 80px; width: 280px;
+  display: flex; flex-direction: column; align-items: flex-end; z-index: 10;
+}
+.main-job-area { display: flex; flex-direction: column; align-items: center; gap: 6px; margin-bottom: 20px; padding-right: 40px; }
+#mainJobIcon {
+  width: 120px; height: 120px;
+  filter: invert(1) drop-shadow(0 0 20px rgba(255,255,255,.6));
+  display: none;
+}
+body.light #mainJobIcon { filter: drop-shadow(0 0 10px rgba(0,0,0,.3)); }
+.main-job-lbl {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 14px; opacity: .35; letter-spacing: .14em; color: white;
+}
+
+.ps-card-section { display: flex; flex-direction: column; align-items: flex-end; }
+.ps-label-box {
+  display: inline-flex; align-items: center;
+  padding: 6px 40px 6px 18px;
+  font-family: var(--label-font, 'Do Hyeon'), sans-serif;
+  font-size: 24px; letter-spacing: .08em;
+  box-shadow: -4px 4px 16px rgba(0,0,0,0.4);
+  background: var(--label3-bg, rgba(245,195,95,0.95));
+  color: var(--label3-text, #111);
+  margin-bottom: 8px;
+}
+.ps-label-sub {
+  font-size: 15px; color: rgba(255,255,255,.55);
+  padding: 2px 40px 8px 0;
+  font-family: var(--info-font, 'Do Hyeon'), sans-serif;
+  letter-spacing: .04em; text-align: right;
+  display: none;
+}
+.ps-label-sub.visible { display: block; }
+.ps-display-row {
+  display: flex; flex-wrap: wrap; gap: 10px; justify-content: flex-end;
+  padding-right: 40px; max-width: 260px;
+}
+.ps-item { display: flex; flex-direction: column; align-items: center; gap: 3px; }
+.ps-item img { width: 44px; height: 44px; }
+.ps-item span {
+  font-size: 12px; opacity: .65; white-space: nowrap;
+  font-family: var(--info-font, 'Do Hyeon'), sans-serif; color: white;
+}
+
+/* 특종 섹션 */
+.card-feat {
+  position: absolute; top: 540px; left: 0; z-index: 8; max-width: 580px;
+}
+.feat-label-box {
+  display: inline-flex; align-items: center;
+  padding: 5px 20px 5px 40px;
+  font-family: var(--label-font, 'Do Hyeon'), sans-serif;
+  font-size: 26px; letter-spacing: .08em;
+  box-shadow: 4px 4px 16px rgba(0,0,0,0.4);
+  background: var(--label2-bg, rgba(245,195,95,0.95));
+  color: var(--label2-text, #111);
+  margin-bottom: 6px;
+}
+.feat-sub {
+  font-size: 16px; color: rgba(255,255,255,.55);
+  padding: 0 0 6px 40px;
+  font-family: var(--info-font, 'Do Hyeon'), sans-serif;
+  letter-spacing: .04em; display: none;
+}
+.feat-sub.visible { display: block; }
+#featTitle {
+  font-family: var(--label-font, 'Do Hyeon'), sans-serif;
+  font-size: 50px; line-height: 1.1; color: white;
+  padding-left: 40px;
+  text-shadow: 2px 4px 16px rgba(0,0,0,0.7);
+}
+.time-slots { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; padding-left: 40px; }
+.time-slot {
+  padding: 5px 18px; border: 1px solid rgba(255,255,255,.7);
+  font-size: 20px; letter-spacing: .06em;
+  font-family: var(--info-font, 'Do Hyeon'), sans-serif;
+  background: rgba(255,255,255,.08); color: white;
+  display: none;
+}
+.time-slot.on { display: inline-block; }
+
+/* 왼쪽 잡 아이콘 열 */
+.card-job-col {
+  position: absolute; left: 0; top: 140px; bottom: 0; width: 56px;
+  display: flex; flex-direction: column; align-items: center;
+  justify-content: flex-end; padding-bottom: 260px; z-index: 9; gap: 4px;
+}
+.job-card-icon {
+  width: 40px; height: 40px;
+  filter: invert(1); opacity: .8;
+}
+body.light .job-card-icon { filter: none; }
+
+/* 저작권 */
+.card-credit {
+  position: absolute; left: 14px; bottom: 120px; z-index: 10;
+  writing-mode: vertical-rl;
+  font-size: 10px; letter-spacing: .06em; color: white;
+  text-shadow: 0 0 8px rgba(255,255,255,.7), 0 0 16px rgba(255,255,255,.4);
+  opacity: .7; white-space: nowrap; line-height: 1.4;
+}
+body.light .card-credit { color: #111; text-shadow: 0 0 8px rgba(255,255,255,.9), 0 0 16px rgba(255,255,255,.7); }
+
+/* 태그 / 메모 */
+#cardTags {
+  position: absolute; bottom: 80px; left: 60px; right: 320px;
+  z-index: 10; display: flex; flex-wrap: wrap; gap: 7px;
+}
+.tag {
+  padding: 4px 16px; border: 1px solid rgba(255,255,255,.55);
+  font-size: 17px; letter-spacing: .05em;
+  background: rgba(0,0,0,.25); border-radius: 30px; color: white;
+  font-family: var(--info-font, 'Do Hyeon'), sans-serif;
+}
+#cardMemo {
+  position: absolute; bottom: 80px; right: 0;
+  font-size: 18px; color: white; opacity: .45;
+  font-family: var(--info-font, 'Do Hyeon'), sans-serif;
+  z-index: 10; line-height: 1.6; max-width: 460px;
+  text-align: right; white-space: pre-wrap;
+  padding: 12px 40px 12px 20px;
+  background: rgba(0,0,0,.15);
+  border-right: 3px solid rgba(255,255,255,.35);
+}
+
+/* 라인아트 */
+#lineArt {
+  position: absolute; bottom: -30px; left: 50%; transform: translateX(-50%);
+  width: 620px; height: 620px; object-fit: contain;
+  filter: invert(1); z-index: 5; pointer-events: none; display: none;
+}
 </style>
 </head>
-<body class="dark-theme">
+<body>
 
 <div class="panel">
   <div class="panel-header">
-    <div class="panel-title">FF14 커버 카드 메이커</div>
-    <button class="theme-toggle" id="themeToggleBtn" onclick="toggleTheme()" title="라이트/다크 모드 전환">
-      <span id="themeIcon">☽</span>
-    </button>
-  </div>
-  <div class="tab-bar">
-    <button class="tab-btn active" onclick="switchTab('tab-basic',this)">프로필</button>
-    <button class="tab-btn" onclick="switchTab('tab-jobs',this)">직업</button>
-    <button class="tab-btn" onclick="switchTab('tab-style',this)">플레이스타일</button>
-    <button class="tab-btn" onclick="switchTab('tab-color',this)">컬러</button>
-    <button class="tab-btn" onclick="switchTab('tab-bg',this)">배경/라인아트</button>
+    <div class="panel-title">FF14 Cover Card Maker</div>
+    <button class="theme-btn" id="themeBtn" onclick="toggleTheme()">☽</button>
   </div>
 
-   <!-- 탭: 프로필 -->
-  <div class="tab-content active" id="tab-basic">
-    <!-- 기본 정보 섹션 -->
+  <!-- 고정: 배경 업로드 -->
+  <div class="fixed-upload">
+    <label>배경 이미지</label>
+    <div class="upload-btn-wrap">
+      <input type="file" accept="image/*" onchange="loadBg(event)">
+      <div class="upload-visual" id="uploadVisual">
+        <span class="icon">🖼</span>
+        <span id="uploadText">이미지를 선택하거나 드래그하세요</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 탭바 -->
+  <div class="tab-bar">
+    <button class="tab-btn active" onclick="switchTab('t-basic',this)">기본</button>
+    <button class="tab-btn" onclick="switchTab('t-jobs',this)">직업</button>
+    <button class="tab-btn" onclick="switchTab('t-content',this)">컨텐츠</button>
+    <button class="tab-btn" onclick="switchTab('t-info',this)">정보</button>
+    <button class="tab-btn" onclick="switchTab('t-deco',this)">데코</button>
+  </div>
+
+  <!-- ── 기본 탭 ── -->
+  <div class="tab-content active" id="t-basic">
     <div class="section">
-      <h3>기본 정보</h3>
+      <div class="section-title">잡지 정보</div>
       <div class="field">
         <label>잡지 이름</label>
         <input type="text" id="titleInput" oninput="updateCard()" placeholder="EORZEAN">
       </div>
-      <div class="field">
-        <label>칭호</label>
-        <input type="text" id="titleBoxInput" oninput="updateCard()" placeholder="모험가">
-      </div>
-      <div style="display:flex;gap:6px;align-items:flex-end;">
-        <div class="field" style="flex:1;margin-bottom:0;">
+    </div>
+    <div class="section">
+      <div class="section-title">캐릭터</div>
+      <div class="row2">
+        <div class="field">
           <label>닉네임</label>
           <input type="text" id="nameInput" oninput="updateCard()" placeholder="이름">
         </div>
-        <div class="field" style="width:88px;margin-bottom:0;">
+        <div class="field" style="max-width:100px;">
           <label>서버</label>
           <select id="serverInput" onchange="updateCard()">
-            <option value="">-</option>
+            <option value="">없음</option>
             <option>카벙클</option>
             <option>초코보</option>
             <option>모그리</option>
@@ -544,203 +580,260 @@
           </select>
         </div>
       </div>
-      <div class="check-row" style="margin-top:6px;">
+      <div class="check-row">
         <input type="checkbox" id="ingameCheck" onchange="updateCard()">
         <label for="ingameCheck">* 인게임과 달라요</label>
       </div>
     </div>
-
-    <!-- 폰트 설정 섹션 (분리) -->
     <div class="section">
-      <h3>닉네임 폰트</h3>
-      <div class="font-grid" id="nameFontGrid"></div>
-    </div>
-    <div class="section">
-      <h3>라벨 폰트</h3>
-      <div class="font-grid" id="labelFontGrid"></div>
-    </div>
-    <div class="section">
-      <h3>잡지 타이틀 폰트</h3>
-      <div class="font-grid" id="titleFontGrid"></div>
-    </div>
-
-    <div class="section">
-      <h3>성향 태그</h3>
+      <div class="section-title">성향 태그</div>
       <div class="field">
         <label>쉼표로 구분</label>
         <textarea id="tagInput" oninput="updateCard()" placeholder="파란14, 레이드, 제작" rows="2"></textarea>
       </div>
     </div>
     <div class="section">
-      <h3>메모 / 코멘트</h3>
+      <div class="section-title">메모</div>
       <div class="field">
-        <textarea id="memoInput" oninput="updateCard()" placeholder="자유롭게 입력하세요" rows="3"></textarea>
-      </div>
-    </div>
-    <div class="section">
-      <button class="save-btn" onclick="saveImage()">📸 이미지 저장</button>
-    </div>
-  </div>
-
-  <!-- 탭: 직업 -->
-  <div class="tab-content" id="tab-jobs">
-    <div class="section">
-      <h3>메인 직업</h3>
-      <div style="font-size:10px;opacity:0.4;margin-bottom:8px;">클릭으로 선택 / 다시 클릭하면 해제</div>
-      <div class="main-job-select-grid" id="mainJobSelect"></div>
-    </div>
-    <div class="section">
-      <h3>보유 직업</h3>
-      <div style="display:flex;gap:6px;margin:8px 0;">
-        <button onclick="selectAllJobs()">전체 선택</button>
-        <button onclick="clearJobs()">전체 해제</button>
-      </div>
-      <div id="jobSelect"></div>
-    </div>
-  </div>
-
-   <!-- 탭: 플레이스타일 -->
-  <div class="tab-content" id="tab-style">
-    <div class="section">
-      <h3>활동 시간대</h3>
-      <div style="font-size:10px;opacity:0.4;margin-bottom:8px;">선택된 항목만 카드에 표시됩니다</div>
-      <div style="display:flex;gap:5px;flex-wrap:wrap;">
-        <button class="time-btn" data-time="아침" onclick="toggleTime(this)">아침</button>
-        <button class="time-btn" data-time="점심" onclick="toggleTime(this)">점심</button>
-        <button class="time-btn" data-time="저녁" onclick="toggleTime(this)">저녁</button>
-        <button class="time-btn" data-time="심야" onclick="toggleTime(this)">심야</button>
-      </div>
-    </div>
-    <div class="section">
-      <h3>플레이 스타일</h3>
-      <div class="ps-counter" id="psCounter">0 / 7 선택</div>
-      <div style="font-size:10px;opacity:0.4;margin-bottom:8px;">최대 7개 · 오른쪽에 표시됩니다</div>
-      <div class="playstyle-grid" id="playstyleSelect"></div>
-    </div>
-  </div>
-
-  <!-- 탭: 컬러 -->
-  <div class="tab-content" id="tab-color">
-    <div class="section">
-      <h3>🎖️ 칭호 라벨</h3>
-      <div class="color-row"><span class="color-label">배경</span><input type="color" id="titleBgColor" value="#f5c35f" onchange="updateTitleColors()"></div>
-      <div class="color-row"><span class="color-label">글자</span><input type="color" id="titleTextColor" value="#111111" onchange="updateTitleColors()"></div>
-      <div class="color-presets">
-        <div class="color-swatch" style="background:#f5c35f" onclick="setTitleBg('#f5c35f')"></div>
-        <div class="color-swatch" style="background:#e05252" onclick="setTitleBg('#e05252')"></div>
-        <div class="color-swatch" style="background:#52ade0" onclick="setTitleBg('#52ade0')"></div>
-        <div class="color-swatch" style="background:#ffffff; border:1px solid #ccc;" onclick="setTitleBg('#ffffff')"></div>
-      </div>
-    </div>
-    <div class="section">
-      <h3>🔥 특종! 라벨</h3>
-      <div class="color-row"><span class="color-label">배경</span><input type="color" id="featBgColor" value="#f5c35f" onchange="updateFeatColors()"></div>
-      <div class="color-row"><span class="color-label">글자</span><input type="color" id="featTextColor" value="#111111" onchange="updateFeatColors()"></div>
-      <div class="color-presets">
-        <div class="color-swatch" style="background:#f5c35f" onclick="setFeatBg('#f5c35f')"></div>
-        <div class="color-swatch" style="background:#e05252" onclick="setFeatBg('#e05252')"></div>
-        <div class="color-swatch" style="background:#52ade0" onclick="setFeatBg('#52ade0')"></div>
-        <div class="color-swatch" style="background:#ffffff; border:1px solid #ccc;" onclick="setFeatBg('#ffffff')"></div>
-      </div>
-      <div class="field" style="margin-top:12px;">
-        <label>라벨 문구</label>
-        <input type="text" id="featLabelText" value="특종!" oninput="updateLabelTexts()">
-      </div>
-    </div>
-    <div class="section">
-      <h3>🎮 즐길까? 라벨</h3>
-      <div class="color-row"><span class="color-label">배경</span><input type="color" id="psBgColor" value="#f5c35f" onchange="updatePsColors()"></div>
-      <div class="color-row"><span class="color-label">글자</span><input type="color" id="psTextColor" value="#111111" onchange="updatePsColors()"></div>
-      <div class="color-presets">
-        <div class="color-swatch" style="background:#f5c35f" onclick="setPsBg('#f5c35f')"></div>
-        <div class="color-swatch" style="background:#e05252" onclick="setPsBg('#e05252')"></div>
-        <div class="color-swatch" style="background:#52ade0" onclick="setPsBg('#52ade0')"></div>
-        <div class="color-swatch" style="background:#ffffff; border:1px solid #ccc;" onclick="setPsBg('#ffffff')"></div>
-      </div>
-      <div class="field" style="margin-top:12px;">
-        <label>라벨 문구</label>
-        <input type="text" id="psLabelText" value="주로 어떤걸 즐길까?" oninput="updateLabelTexts()">
+        <textarea id="memoInput" oninput="updateCard()" placeholder="자유롭게 입력" rows="3"></textarea>
       </div>
     </div>
   </div>
 
-  <!-- 탭: 배경 & 라인아트 -->
-  <div class="tab-content" id="tab-bg">
+  <!-- ── 직업 탭 ── -->
+  <div class="tab-content" id="t-jobs">
     <div class="section">
-      <h3>배경 이미지</h3>
-      <input type="file" accept="image/*" onchange="loadBgImage(event)">
-      <div style="font-size:10px;opacity:0.4;margin-top:6px;">업로드 후 드래그로 위치 조정</div>
+      <div class="section-title">메인 직업</div>
+      <div style="font-size:10px;color:var(--text-muted);margin-bottom:6px;">선택 후 다시 클릭하면 해제</div>
+      <div class="main-job-grid" id="mainJobGrid"></div>
     </div>
     <div class="section">
-      <h3>라인아트 선택</h3>
-      <div style="font-size:10px;opacity:0.4;margin-bottom:8px;">created by SIREN · ko-fi.com/s/2e76352d92</div>
-      <div id="lineArtSelect" style="display:flex;flex-wrap:wrap;gap:5px;"></div>
-      <div style="margin-top:12px;">
-        <button onclick="clearLineArt()" style="width:100%;">라인아트 제거</button>
+      <div class="section-title">보유 직업</div>
+      <div class="btn-row">
+        <button class="mini-btn" onclick="selectAllJobs()">전체</button>
+        <button class="mini-btn" onclick="clearJobs()">해제</button>
+      </div>
+      <div id="jobGrid"></div>
+    </div>
+    <div class="section">
+      <div class="section-title">라인아트</div>
+      <div style="font-size:10px;color:var(--text-muted);margin-bottom:4px;">created by SIREN · ko-fi.com/s/2e76352d92</div>
+      <div class="lineart-grid" id="lineartGrid"></div>
+      <div class="btn-row" style="margin-top:8px;">
+        <button class="mini-btn" onclick="clearLineart()">라인아트 제거</button>
+      </div>
+      <div class="field" style="margin-top:8px;">
+        <label>불투명도</label>
+        <div class="slider-row">
+          <input type="range" id="laOpacity" min="0" max="100" value="70" oninput="updateLaOpacity(this)">
+          <span class="slider-val" id="laOpacityVal">70%</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 컨텐츠 탭 ── -->
+  <div class="tab-content" id="t-content">
+    <div class="section">
+      <div class="section-title">활동 시간대</div>
+      <div class="time-row">
+        <button class="time-btn" data-t="아침" onclick="toggleTime(this)">아침</button>
+        <button class="time-btn" data-t="점심" onclick="toggleTime(this)">점심</button>
+        <button class="time-btn" data-t="저녁" onclick="toggleTime(this)">저녁</button>
+        <button class="time-btn" data-t="심야" onclick="toggleTime(this)">심야</button>
+        <button class="time-btn" data-t="새벽" onclick="toggleTime(this)">새벽</button>
       </div>
     </div>
     <div class="section">
-      <h3>라인아트 불투명도</h3>
+      <div class="section-title">플레이스타일</div>
+      <div class="ps-count" id="psCount">0 / 7</div>
+      <div class="ps-grid" id="psGrid"></div>
+    </div>
+  </div>
+
+  <!-- ── 정보 탭 ── -->
+  <div class="tab-content" id="t-info">
+    <!-- 라벨1: 칭호 -->
+    <div class="section">
+      <div class="section-title">🏷 라벨 1 · 칭호</div>
       <div class="field">
-        <label id="opacityLabel">70%</label>
-        <input type="range" id="lineArtOpacity" min="0" max="100" value="70" oninput="updateLineArtOpacity(this)">
+        <label>라벨 텍스트</label>
+        <input type="text" id="label1Text" value="모험가" oninput="updateCard()">
+      </div>
+      <div class="field">
+        <label>부제목 (비우면 숨김)</label>
+        <input type="text" id="label1Sub" oninput="updateCard()" placeholder="">
       </div>
     </div>
+    <!-- 라벨2: 특종 -->
+    <div class="section">
+      <div class="section-title">🔥 라벨 2 · 특종</div>
+      <div class="field">
+        <label>라벨 텍스트</label>
+        <input type="text" id="label2Text" value="특종!" oninput="updateCard()">
+      </div>
+      <div class="field">
+        <label>부제목 (비우면 숨김)</label>
+        <input type="text" id="label2Sub" oninput="updateCard()" placeholder="모험가는 언제 보일까?">
+      </div>
+    </div>
+    <!-- 라벨3: 플레이스타일 -->
+    <div class="section">
+      <div class="section-title">🎮 라벨 3 · 플레이스타일</div>
+      <div class="field">
+        <label>라벨 텍스트</label>
+        <input type="text" id="label3Text" value="주로 어떤걸 즐길까?" oninput="updateCard()">
+      </div>
+      <div class="field">
+        <label>부제목 (비우면 숨김)</label>
+        <input type="text" id="label3Sub" oninput="updateCard()" placeholder="">
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 데코 탭 ── -->
+  <div class="tab-content" id="t-deco">
+    <!-- 컬러 -->
+    <div class="section">
+      <div class="section-title">라벨 색상</div>
+
+      <div style="font-size:10px;color:var(--text-muted);margin-bottom:6px;">라벨 1 · 칭호</div>
+      <div class="color-row">
+        <span class="color-lbl">배경</span>
+        <input type="color" id="l1bg" value="#f5c35f" onchange="updateColors()">
+        <div class="swatches">
+          <div class="swatch" style="background:#f5c35f" onclick="setSwatch('l1bg','#f5c35f')"></div>
+          <div class="swatch" style="background:#e05252" onclick="setSwatch('l1bg','#e05252')"></div>
+          <div class="swatch" style="background:#52ade0" onclick="setSwatch('l1bg','#52ade0')"></div>
+          <div class="swatch" style="background:#fff;border:1px solid #ccc" onclick="setSwatch('l1bg','#ffffff')"></div>
+          <div class="swatch" style="background:#222" onclick="setSwatch('l1bg','#222222')"></div>
+        </div>
+      </div>
+      <div class="color-row">
+        <span class="color-lbl">글자</span>
+        <input type="color" id="l1text" value="#111111" onchange="updateColors()">
+      </div>
+
+      <div style="font-size:10px;color:var(--text-muted);margin:12px 0 6px;">라벨 2 · 특종</div>
+      <div class="color-row">
+        <span class="color-lbl">배경</span>
+        <input type="color" id="l2bg" value="#f5c35f" onchange="updateColors()">
+        <div class="swatches">
+          <div class="swatch" style="background:#f5c35f" onclick="setSwatch('l2bg','#f5c35f')"></div>
+          <div class="swatch" style="background:#e05252" onclick="setSwatch('l2bg','#e05252')"></div>
+          <div class="swatch" style="background:#52ade0" onclick="setSwatch('l2bg','#52ade0')"></div>
+          <div class="swatch" style="background:#fff;border:1px solid #ccc" onclick="setSwatch('l2bg','#ffffff')"></div>
+          <div class="swatch" style="background:#222" onclick="setSwatch('l2bg','#222222')"></div>
+        </div>
+      </div>
+      <div class="color-row">
+        <span class="color-lbl">글자</span>
+        <input type="color" id="l2text" value="#111111" onchange="updateColors()">
+      </div>
+
+      <div style="font-size:10px;color:var(--text-muted);margin:12px 0 6px;">라벨 3 · 플레이스타일</div>
+      <div class="color-row">
+        <span class="color-lbl">배경</span>
+        <input type="color" id="l3bg" value="#f5c35f" onchange="updateColors()">
+        <div class="swatches">
+          <div class="swatch" style="background:#f5c35f" onclick="setSwatch('l3bg','#f5c35f')"></div>
+          <div class="swatch" style="background:#e05252" onclick="setSwatch('l3bg','#e05252')"></div>
+          <div class="swatch" style="background:#52ade0" onclick="setSwatch('l3bg','#52ade0')"></div>
+          <div class="swatch" style="background:#fff;border:1px solid #ccc" onclick="setSwatch('l3bg','#ffffff')"></div>
+          <div class="swatch" style="background:#222" onclick="setSwatch('l3bg','#222222')"></div>
+        </div>
+      </div>
+      <div class="color-row">
+        <span class="color-lbl">글자</span>
+        <input type="color" id="l3text" value="#111111" onchange="updateColors()">
+      </div>
+    </div>
+
+    <!-- 폰트 -->
+    <div class="section">
+      <div class="section-title">폰트</div>
+      <div class="font-tabs">
+        <button class="font-tab active" onclick="switchFontTab('ko',this)">한글</button>
+        <button class="font-tab" onclick="switchFontTab('en',this)">영문</button>
+      </div>
+
+      <!-- 한글 폰트 -->
+      <div class="font-section active" id="fs-ko">
+        <div class="font-target-label">닉네임 폰트</div>
+        <div class="font-list" id="fl-name-ko"></div>
+        <div class="font-target-label">라벨 / 부제목 폰트</div>
+        <div class="font-list" id="fl-label-ko"></div>
+      </div>
+
+      <!-- 영문 폰트 -->
+      <div class="font-section" id="fs-en">
+        <div class="font-target-label">잡지 타이틀 폰트</div>
+        <div class="font-list" id="fl-title-en"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 고정: 저장 -->
+  <div class="fixed-save">
+    <button class="save-btn" onclick="saveImage()">📸 이미지로 저장</button>
   </div>
 </div>
 
- <!-- 미리보기 영역 -->
-<div class="preview-container">
-  <div class="preview-wrapper" id="previewWrapper">
-    <div class="card vertical" id="card">
-      <img class="bg" id="bgImage" src="">
+<!-- 미리보기 -->
+<div class="preview-area">
+  <div class="preview-wrap" id="previewWrap">
+    <div class="card" id="card">
+      <img class="bg" id="bgImg" src="">
       <div class="card-overlay"></div>
 
       <div class="card-top">
         <div class="card-date" id="cardDate"></div>
-        <div class="barcode-area">
+        <div class="barcode-wrap">
           <svg class="barcode-svg" id="barcodeSvg" viewBox="0 0 100 38"></svg>
-          <div class="barcode-label" id="barcodeLabel">FF14-PROFILE</div>
+          <div class="barcode-lbl" id="barcodeLabel">FF14-PROFILE</div>
         </div>
       </div>
 
       <div id="mainTitle">EORZEAN</div>
-      <div class="card-divider-top"></div>
+      <div class="card-divider top"></div>
 
-      <div class="bottom-left">
-        <div class="feature-box" id="featureBox">모험가</div>
-        <div id="nameServerRow">
+      <!-- 왼쪽 정보 -->
+      <div class="card-left-info">
+        <div class="label-box" id="cardLabel1">모험가</div>
+        <div class="label-sub" id="cardLabel1Sub"></div>
+        <div id="nameBlock">
           <div id="cardName">캐릭터</div>
           <div id="serverDisplay"></div>
         </div>
-        <div class="ingame-note" id="ingameNote" style="display:none;">* 인게임과 달라요</div>
+        <div class="ingame-note" id="ingameNote">* 인게임과 달라요</div>
       </div>
 
-      <div class="card-left">
-        <div id="subJobDisplay"></div>
-        <div class="card-credit">ⓒ SQUARE ENIX · Published in Korea by ACTOZ SOFT CO., LTD · FINAL FANTASY XIV</div>
-      </div>
-
+      <!-- 오른쪽 -->
       <div class="card-right">
         <div class="main-job-area">
           <img id="mainJobIcon" src="">
-          <div class="main-job-label">MAIN JOB</div>
+          <div class="main-job-lbl">MAIN JOB</div>
         </div>
-        <div class="ps-section">
-          <div class="ps-section-label-box">주로 어떤걸 즐길까?</div>
+        <div class="ps-card-section">
+          <div class="ps-label-box" id="cardLabel3">주로 어떤걸 즐길까?</div>
+          <div class="ps-label-sub" id="cardLabel3Sub"></div>
           <div class="ps-display-row" id="psDisplayRow"></div>
         </div>
       </div>
 
-      <div class="card-features-left">
-        <div class="feature-block">
-          <div class="feat-label">특종!</div>
-          <div class="feat-title">모험가는 언제보일까?</div>
-          <div class="time-slots-card" id="timeSlotsCard"></div>
-        </div>
+      <!-- 특종 섹션 -->
+      <div class="card-feat">
+        <div class="feat-label-box" id="cardLabel2">특종!</div>
+        <div class="feat-sub" id="cardLabel2Sub"></div>
+        <div id="featTitle">모험가는 언제보일까?</div>
+        <div class="time-slots" id="timeSlots"></div>
       </div>
 
-      <div class="card-divider-bottom"></div>
+      <!-- 보유 직업 열 -->
+      <div class="card-job-col" id="cardJobCol"></div>
+
+      <div class="card-credit">ⓒ SQUARE ENIX · Published in Korea by ACTOZ SOFT CO., LTD · FINAL FANTASY XIV</div>
+
       <div id="cardTags"></div>
       <div id="cardMemo"></div>
       <img id="lineArt" src="">
@@ -749,410 +842,418 @@
 </div>
 
 <script>
-  // 데이터
-  const jobCategories = {
-    "전투": {
-      "탱커": ["pld","war","drk","gnb"],
-      "힐러": ["whm","sch","ast","sge"],
-      "근딜": ["mnk","drg","nin","sam","rpr","vpr"],
-      "원딜": ["brd","mch","dnc"],
-      "마딜": ["blm","smn","rdm","pct","blu"]
-    }
+// ── 데이터 ──
+const JOB_CATS = {
+  "탱커": ["pld","war","drk","gnb"],
+  "힐러": ["whm","sch","ast","sge"],
+  "근딜": ["mnk","drg","nin","sam","rpr","vpr"],
+  "원딜": ["brd","mch","dnc"],
+  "마딜": ["blm","smn","rdm","pct","blu"]
+};
+
+const PS_LIST = [
+  {id:1,l:"RP"},{id:2,l:"플이벤트"},{id:3,l:"레벨링"},
+  {id:4,l:"초보자"},{id:5,l:"부담없이"},{id:6,l:"진지공략"},
+  {id:9,l:"제작"},{id:10,l:"채광/원예"},{id:11,l:"하우징"},
+  {id:12,l:"마물사냥"},{id:13,l:"보물찾기"},{id:14,l:"PvP"},
+  {id:15,l:"낚시"},{id:16,l:"작패유희"},{id:17,l:"악기연주"},
+  {id:18,l:"장비투영"},{id:19,l:"단체자세"},{id:20,l:"골드소서"},
+  {id:21,l:"대화나누기"},{id:22,l:"메인퀘"},{id:23,l:"필드탐색"},
+  {id:24,l:"던전탐색"},{id:25,l:"무인도"},{id:26,l:"길모으기"},
+  {id:27,l:"업적"},{id:28,l:"던전"},{id:29,l:"레이드"},
+  {id:30,l:"토벌전"},{id:31,l:"절레이드"},{id:32,l:"딥던전"},
+  {id:33,l:"무작위임무"},{id:35,l:"멘토"},
+];
+
+const KO_FONTS = [
+  {name:'Do Hyeon', preview:'도현체 가나다'},
+  {name:'Black Han Sans', preview:'블랙한산스'},
+  {name:'Jua', preview:'주아체 가나다'},
+  {name:'Gugi', preview:'구기체 한글'},
+  {name:'Noto Serif KR', preview:'노토 명조체'},
+  {name:'Gowun Batang', preview:'고운바탕체'},
+  {name:'Sunflower', preview:'해바라기체'},
+  {name:'Hi Melody', preview:'하이멜로디'},
+  {name:'Noto Sans KR', preview:'노토 고딕체'},
+];
+
+const EN_FONTS = [
+  {name:'Bebas Neue', preview:'EORZEAN COVER'},
+  {name:'Playfair Display', preview:'EORZEAN Cover'},
+  {name:'Bodoni Moda', preview:'EORZEAN Cover'},
+  {name:'Cormorant Garamond', preview:'EORZEAN Cover'},
+  {name:'Big Shoulders Display', preview:'EORZEAN BOLD'},
+  {name:'Josefin Sans', preview:'EORZEAN LIGHT'},
+  {name:'Italiana', preview:'Eorzean Cover'},
+];
+
+const PS_MAX = 7;
+let selJobs = [], mainJob = null, activeTimes = [], selPS = [];
+let bgX=50, bgY=50, dragging=false, dragSX, dragSY;
+let currentNameFont = 'Do Hyeon';
+let currentLabelFont = 'Do Hyeon';
+let currentTitleFont = 'Bebas Neue';
+
+function allJobs() {
+  return Object.values(JOB_CATS).flat();
+}
+
+// ── 탭 ──
+function switchTab(id, btn) {
+  document.querySelectorAll('.tab-content').forEach(e=>e.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(e=>e.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+}
+
+function switchFontTab(id, btn) {
+  document.querySelectorAll('.font-section').forEach(e=>e.classList.remove('active'));
+  document.querySelectorAll('.font-tab').forEach(e=>e.classList.remove('active'));
+  document.getElementById('fs-'+id).classList.add('active');
+  btn.classList.add('active');
+}
+
+// ── 테마 ──
+function toggleTheme() {
+  const b = document.body, btn = document.getElementById('themeBtn');
+  b.classList.toggle('light');
+  btn.textContent = b.classList.contains('light') ? '☀' : '☽';
+}
+
+// ── 날짜 ──
+function getDate() {
+  const m = ["JANUARY","FEBRUARY","MARCH","APRIL","MAY","JUNE",
+             "JULY","AUGUST","SEPTEMBER","OCTOBER","NOVEMBER","DECEMBER"];
+  const n = new Date();
+  return `${m[n.getMonth()]} ${n.getFullYear()}`;
+}
+
+// ── 바코드 ──
+function drawBarcode() {
+  const svg = document.getElementById('barcodeSvg');
+  let h = '';
+  for (let i=0; i<38; i++) {
+    const x = (i/38*100).toFixed(1);
+    const bw = Math.random()<.35 ? 2 : 1;
+    const bh = Math.random()<.2 ? 25 : 34;
+    h += `<rect x="${x}" y="${38-bh}" width="${bw}" height="${bh}" fill="white" opacity=".55"/>`;
+  }
+  svg.innerHTML = h;
+}
+
+// ── 색상 ──
+function updateColors() {
+  const r = document.documentElement.style;
+  r.setProperty('--label1-bg', document.getElementById('l1bg').value);
+  r.setProperty('--label1-text', document.getElementById('l1text').value);
+  r.setProperty('--label2-bg', document.getElementById('l2bg').value);
+  r.setProperty('--label2-text', document.getElementById('l2text').value);
+  r.setProperty('--label3-bg', document.getElementById('l3bg').value);
+  r.setProperty('--label3-text', document.getElementById('l3text').value);
+}
+function setSwatch(id, val) {
+  document.getElementById(id).value = val;
+  updateColors();
+}
+
+// ── 폰트 렌더링 ──
+function renderFonts() {
+  // 한글 - 닉네임
+  const nameList = document.getElementById('fl-name-ko');
+  KO_FONTS.forEach(f => {
+    const el = mkFontItem(f, () => setNameFont(f.name, el), 'name');
+    nameList.appendChild(el);
+    if (f.name === 'Do Hyeon') el.classList.add('active');
+  });
+
+  // 한글 - 라벨
+  const labelList = document.getElementById('fl-label-ko');
+  KO_FONTS.forEach(f => {
+    const el = mkFontItem(f, () => setLabelFont(f.name, el), 'label');
+    labelList.appendChild(el);
+    if (f.name === 'Do Hyeon') el.classList.add('active');
+  });
+
+  // 영문 - 타이틀
+  const titleList = document.getElementById('fl-title-en');
+  EN_FONTS.forEach(f => {
+    const el = mkFontItem(f, () => setTitleFont(f.name, el), 'title');
+    titleList.appendChild(el);
+    if (f.name === 'Bebas Neue') el.classList.add('active');
+  });
+}
+
+function mkFontItem(f, cb, group) {
+  const el = document.createElement('div');
+  el.className = 'font-item';
+  el.innerHTML = `<span class="font-preview" style="font-family:'${f.name}',sans-serif">${f.preview}</span><span class="font-name">${f.name}</span>`;
+  el.onclick = () => {
+    document.querySelectorAll(`#fl-${group}-ko .font-item, #fl-${group}-en .font-item`).forEach(e=>e.classList.remove('active'));
+    el.classList.add('active');
+    cb();
   };
+  return el;
+}
 
-  const playstyleList = [
-    {id:1,label:"RP"},{id:2,label:"플레이어 이벤트"},{id:3,label:"레벨링"},
-    {id:4,label:"초보자"},{id:5,label:"부담 없이"},{id:6,label:"진지한 공략"},
-    {id:9,label:"제작"},{id:10,label:"채광/원예"},{id:11,label:"하우징"},
-    {id:12,label:"마물사냥"},{id:13,label:"보물찾기"},{id:14,label:"PvP"},
-    {id:15,label:"낚시"},{id:16,label:"작패유희"},{id:17,label:"악기 연주"},
-    {id:18,label:"장비 투영"},{id:19,label:"단체 자세"},{id:20,label:"골드 소서"},
-    {id:21,label:"대화 나누기"},{id:22,label:"메인 퀘스트"},{id:23,label:"필드 탐색"},
-    {id:24,label:"던전 탐색"},{id:25,label:"무인도 개척"},{id:26,label:"길 모으기"},
-    {id:27,label:"업적"},{id:28,label:"던전"},{id:29,label:"레이드"},
-    {id:30,label:"토벌전"},{id:31,label:"절 레이드"},{id:32,label:"딥 던전"},
-    {id:33,label:"무작위 임무"},{id:35,label:"멘토"},
-  ];
+function setNameFont(font) {
+  currentNameFont = font;
+  document.documentElement.style.setProperty('--name-font', `'${font}'`);
+}
+function setLabelFont(font) {
+  currentLabelFont = font;
+  document.documentElement.style.setProperty('--label-font', `'${font}'`);
+  document.documentElement.style.setProperty('--info-font', `'${font}'`);
+}
+function setTitleFont(font) {
+  currentTitleFont = font;
+  document.getElementById('mainTitle').style.fontFamily = `'${font}', sans-serif`;
+}
 
-  // 폰트 목록 (12종)
-  const fontList = [
-    { name: 'Do Hyeon', label: '도현', support: '한글' },
-    { name: 'Noto Serif KR', label: '명조', support: '한글' },
-    { name: 'Bebas Neue', label: 'Bebas', support: '영문' },
-    { name: 'Noto Sans KR', label: '고딕', support: '한글' },
-    { name: 'Black Han Sans', label: '블랙한산스', support: '한글' },
-    { name: 'Gowun Batang', label: '고운바탕', support: '한글' },
-    { name: 'Nanum Gothic Coding', label: '나눔고딕코딩', support: '한글' },
-    { name: 'Gugi', label: '구기', support: '한글' },
-    { name: 'Sunflower', label: '해바라기', support: '한글' },
-    { name: 'Jua', label: '주아', support: '한글' },
-    { name: 'Gaegu', label: '개구', support: '한글' },
-    { name: 'Hi Melody', label: '하이멜로디', support: '한글' }
-  ];
+// ── 직업 렌더링 ──
+function renderJobs() {
+  // 메인잡 그리드
+  const mg = document.getElementById('mainJobGrid');
+  mg.innerHTML = allJobs().map(j =>
+    `<img src="images/jobs/ffxivjobssvg/${j}.svg" class="main-job-icon" id="mj-${j}" onclick="setMainJob('${j}')" title="${j}">`
+  ).join('');
 
-  const PS_MAX = 7;
-  let selectedJobs = [], mainJob = null, activeTimes = [], selectedPlaystyles = [];
-  let bgPosX=50, bgPosY=50, isDragging=false, dragStartX, dragStartY;
-
-  function getAllJobsInOrder() {
-    const all = [];
-    Object.values(jobCategories).forEach(cat => {
-      if (Array.isArray(cat)) all.push(...cat);
-      else Object.values(cat).forEach(sub => all.push(...sub));
+  // 보유 직업
+  let h = '';
+  for (const [sub, jobs] of Object.entries(JOB_CATS)) {
+    h += `<div class="job-category"><div class="job-cat-title">${sub}</div><div class="job-subrow"><div class="job-row">`;
+    jobs.forEach(j => {
+      h += `<img src="images/jobs/ffxivjobssvg/${j}.svg" class="job-icon" id="ji-${j}" onclick="toggleJob('${j}')" title="${j}">`;
     });
-    return all;
+    h += `</div></div></div>`;
   }
+  document.getElementById('jobGrid').innerHTML = h;
 
-  function getCurrentDate() {
-    const now = new Date();
-    const months = ["JANUARY","FEBRUARY","MARCH","APRIL","MAY","JUNE",
-                    "JULY","AUGUST","SEPTEMBER","OCTOBER","NOVEMBER","DECEMBER"];
-    return `${months[now.getMonth()]} ${now.getFullYear()}`;
+  // 라인아트
+  document.getElementById('lineartGrid').innerHTML = allJobs().map(j =>
+    `<img src="images/jobs/ffxivjobssvg/${j}.svg" class="la-icon" id="la-${j}" onclick="setLineart('${j}')" title="${j}">`
+  ).join('');
+}
+
+function setMainJob(job) {
+  mainJob = mainJob === job ? null : job;
+  if (mainJob && !selJobs.includes(job)) { selJobs.push(job); }
+  syncJobUI(); updateCard();
+}
+
+function toggleJob(job) {
+  if (selJobs.includes(job)) {
+    selJobs = selJobs.filter(j=>j!==job);
+    if (mainJob===job) { mainJob=null; document.querySelectorAll('.main-job-icon').forEach(e=>e.classList.remove('selected')); }
+  } else { selJobs.push(job); }
+  syncJobUI(); updateCard();
+}
+
+function syncJobUI() {
+  document.querySelectorAll('.job-icon').forEach(el => {
+    const j = el.id.replace('ji-','');
+    el.classList.toggle('selected', selJobs.includes(j) && j!==mainJob);
+    el.classList.toggle('main-sel', j===mainJob);
+  });
+  document.querySelectorAll('.main-job-icon').forEach(el => {
+    el.classList.toggle('selected', el.id.replace('mj-','')===mainJob);
+  });
+}
+
+function selectAllJobs() { selJobs = allJobs(); syncJobUI(); updateCard(); }
+function clearJobs() {
+  selJobs=[]; mainJob=null;
+  document.querySelectorAll('.main-job-icon').forEach(e=>e.classList.remove('selected'));
+  syncJobUI(); updateCard();
+}
+
+// ── 라인아트 ──
+function setLineart(job) {
+  const la = document.getElementById('lineArt');
+  la.src = `images/jobs/CL/${job.toUpperCase()}.png`;
+  la.style.display = 'block';
+  la.style.opacity = document.getElementById('laOpacity').value / 100;
+  document.querySelectorAll('.la-icon').forEach(e=>e.classList.remove('selected'));
+  document.getElementById(`la-${job}`)?.classList.add('selected');
+}
+function clearLineart() {
+  const la = document.getElementById('lineArt');
+  la.style.display='none'; la.src='';
+  document.querySelectorAll('.la-icon').forEach(e=>e.classList.remove('selected'));
+}
+function updateLaOpacity(input) {
+  document.getElementById('laOpacityVal').textContent = input.value+'%';
+  const la = document.getElementById('lineArt');
+  if (la.style.display!=='none') la.style.opacity = input.value/100;
+}
+
+// ── 플레이스타일 ──
+function renderPS() {
+  document.getElementById('psGrid').innerHTML = PS_LIST.map(p => {
+    const n = String(p.id).padStart(2,'0');
+    return `<img src="images/activity/1/${n}.png" class="ps-icon" id="ps-${p.id}" onclick="togglePS(${p.id})" title="${p.l}">`;
+  }).join('');
+}
+
+function togglePS(id) {
+  if (selPS.includes(id)) {
+    selPS = selPS.filter(x=>x!==id);
+  } else {
+    if (selPS.length >= PS_MAX) return;
+    selPS.push(id);
   }
+  syncPS(); updateCard();
+}
 
-  function toggleTheme() {
-    const body = document.body;
-    const icon = document.getElementById('themeIcon');
-    if (body.classList.contains('dark-theme')) {
-        body.classList.remove('dark-theme');
-        body.classList.add('light-theme');
-        icon.textContent = '☀';
-    } else {
-        body.classList.remove('light-theme');
-        body.classList.add('dark-theme');
-        icon.textContent = '☽';
-    }
-  }
+function syncPS() {
+  const cnt = selPS.length;
+  const el = document.getElementById('psCount');
+  el.textContent = `${cnt} / ${PS_MAX}`;
+  el.className = cnt>=PS_MAX ? 'ps-count warn' : 'ps-count';
+  document.querySelectorAll('.ps-icon').forEach(e => {
+    const id = parseInt(e.id.replace('ps-',''));
+    e.classList.toggle('selected', selPS.includes(id));
+    e.classList.toggle('maxed', !selPS.includes(id) && cnt>=PS_MAX);
+  });
+}
 
-  function switchTab(id, btn) {
-    document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-    document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
-    document.getElementById(id).classList.add('active');
-    btn.classList.add('active');
-  }
-
-  // 색상 업데이트
-  function updateTitleColors() {
-    const bg = document.getElementById('titleBgColor').value;
-    const text = document.getElementById('titleTextColor').value;
-    document.documentElement.style.setProperty('--feat-label-bg-title', bg);
-    document.documentElement.style.setProperty('--feat-label-color-title', text);
-  }
-  function updateFeatColors() {
-    const bg = document.getElementById('featBgColor').value;
-    const text = document.getElementById('featTextColor').value;
-    document.documentElement.style.setProperty('--feat-label-bg', bg);
-    document.documentElement.style.setProperty('--feat-label-color', text);
-  }
-  function updatePsColors() {
-    const bg = document.getElementById('psBgColor').value;
-    const text = document.getElementById('psTextColor').value;
-    document.documentElement.style.setProperty('--feat-label-bg-ps', bg);
-    document.documentElement.style.setProperty('--feat-label-color-ps', text);
-  }
-  function setTitleBg(c) { document.getElementById('titleBgColor').value = c; updateTitleColors(); }
-  function setFeatBg(c) { document.getElementById('featBgColor').value = c; updateFeatColors(); }
-  function setPsBg(c) { document.getElementById('psBgColor').value = c; updatePsColors(); }
-
-  // 라벨 문구 업데이트
-  function updateLabelTexts() {
-    document.querySelector('.feat-label').innerText = document.getElementById('featLabelText').value;
-    document.querySelector('.ps-section-label-box').innerText = document.getElementById('psLabelText').value;
-  }
-
-  // 폰트 그리드 렌더링
-  function renderFontGrids() {
-    const nameGrid = document.getElementById('nameFontGrid');
-    const labelGrid = document.getElementById('labelFontGrid');
-    const titleGrid = document.getElementById('titleFontGrid');
-    
-    fontList.forEach(font => {
-      const btn = document.createElement('button');
-      btn.className = 'font-btn';
-      btn.innerHTML = `${font.label} <span class="font-support">${font.support}</span>`;
-      btn.onclick = () => setNameFont(font.name, btn);
-      nameGrid.appendChild(btn);
-      
-      const btn2 = document.createElement('button');
-      btn2.className = 'font-btn';
-      btn2.innerHTML = `${font.label} <span class="font-support">${font.support}</span>`;
-      btn2.onclick = () => setLabelFont(font.name, btn2);
-      labelGrid.appendChild(btn2);
-      
-      const btn3 = document.createElement('button');
-      btn3.className = 'font-btn';
-      btn3.innerHTML = `${font.label} <span class="font-support">${font.support}</span>`;
-      btn3.onclick = () => setTitleFont(font.name, btn3);
-      titleGrid.appendChild(btn3);
-    });
-  }
-
-  function setNameFont(font, btn) {
-    document.documentElement.style.setProperty('--name-font', `'${font}'`);
-    document.querySelectorAll('#nameFontGrid .font-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-  }
-  function setLabelFont(font, btn) {
-    document.documentElement.style.setProperty('--label-font', `'${font}'`);
-    document.querySelectorAll('#labelFontGrid .font-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-  }
-  function setTitleFont(font, btn) {
-    document.getElementById('mainTitle').style.fontFamily = `'${font}', sans-serif`;
-    document.querySelectorAll('#titleFontGrid .font-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-  }
-
-  // 카드 업데이트
-  function updateCard() {
-    document.getElementById("mainTitle").innerText = (document.getElementById("titleInput").value || "EORZEAN").toUpperCase();
-    document.getElementById("cardDate").innerText = getCurrentDate();
-    document.getElementById("featureBox").innerText = document.getElementById("titleBoxInput").value || "모험가";
-
-    const nameVal = document.getElementById("nameInput").value;
-    document.getElementById("cardName").innerText = nameVal || "캐릭터";
-    document.getElementById("barcodeLabel").innerText = (nameVal||"FF14").toUpperCase().slice(0,12);
-    document.getElementById("ingameNote").style.display = document.getElementById("ingameCheck").checked ? "block" : "none";
-
-    const srv = document.getElementById("serverInput").value;
-    document.getElementById("serverDisplay").innerText = srv ? `· ${srv}` : "";
-
-    const mainIcon = document.getElementById("mainJobIcon");
-    if (mainJob) {
-      mainIcon.src = `images/jobs/ffxivjobssvg_meteor/${mainJob}.svg`;
-      mainIcon.style.display = "block";
-    } else { mainIcon.style.display = "none"; }
-
-    const allJobs = getAllJobsInOrder();
-    const subJobs = allJobs.filter(j => selectedJobs.includes(j) && j !== mainJob);
-    let subHtml = "";
-    subJobs.forEach(job => {
-      subHtml += `<img class="job-card-icon-sub" src="images/jobs/ffxivjobssvg_meteor/${job}.svg">`;
-    });
-    document.getElementById("subJobDisplay").innerHTML = subHtml;
-
-    document.getElementById("psDisplayRow").innerHTML = selectedPlaystyles.map(id => {
-      const num = String(id).padStart(2,"0");
-      const lbl = playstyleList.find(p=>p.id===id)?.label || "";
-      return `<div class="ps-display-item">
-        <img class="ps-display-icon" src="images/activity/1/${num}.png" title="${lbl}">
-        <span class="ps-display-name">${lbl}</span>
-      </div>`;
-    }).join("");
-
-    document.getElementById("timeSlotsCard").innerHTML = ["아침","점심","저녁","심야"]
-      .map(t => `<div class="time-slot-card ${activeTimes.includes(t)?'active':''}">${t}</div>`).join("");
-
-    document.getElementById("cardTags").innerHTML = (document.getElementById("tagInput").value||"")
-      .split(",").map(t=>t.trim()).filter(t=>t)
-      .map(t=>`<span class="tag">${t}</span>`).join("");
-    document.getElementById("cardMemo").innerText = document.getElementById("memoInput").value || "";
-  }
-
-  function drawBarcode() {
-    const svg = document.getElementById("barcodeSvg");
-    const bars = 36, w = 100, h = 38;
-    let html = "";
-    for (let i = 0; i < bars; i++) {
-      const x = (i/bars)*w;
-      const bw = Math.random()<0.35 ? 2.0 : 1.0;
-      const bh = Math.random()<0.18 ? h*0.65 : h*0.88;
-      html += `<rect x="${x.toFixed(1)}" y="${(h-bh).toFixed(1)}" width="${bw}" height="${bh.toFixed(1)}" fill="white" opacity="0.6"/>`;
-    }
-    svg.innerHTML = html;
-  }
-
-  function renderMainJobSelect() {
-    document.getElementById("mainJobSelect").innerHTML = getAllJobsInOrder().map(job =>
-      `<img src="images/jobs/ffxivjobssvg/${job}.svg" class="main-job-select-icon" id="mjs-${job}" onclick="setMainJob('${job}')" title="${job}">`
-    ).join("");
-  }
-
-  function setMainJob(job) {
-    mainJob = (mainJob === job) ? null : job;
-    if (mainJob && !selectedJobs.includes(job)) { selectedJobs.push(job); updateSelectionUI(); }
-    document.querySelectorAll(".main-job-select-icon").forEach(el=>el.classList.remove("selected"));
-    if (mainJob) document.getElementById(`mjs-${mainJob}`)?.classList.add("selected");
-    updateCard();
-  }
-
-  function renderJobSelect() {
-    let html = "";
-    for (const category in jobCategories) {
-      const data = jobCategories[category];
-      html += `<div class="job-category"><div class="job-title">${category}</div>`;
-      for (const sub in data) {
-        html += `<div class="job-subrow"><div class="job-subtitle">${sub}</div><div class="job-row">`;
-        data[sub].forEach(job => {
-          html += `<img src="images/jobs/ffxivjobssvg/${job}.svg" class="job-icon" id="icon-${job}" onclick="toggleJob('${job}')" title="${job}">`;
-        });
-        html += `</div></div>`;
-      }
-      html += `</div>`;
-    }
-    document.getElementById("jobSelect").innerHTML = html;
-  }
-
-  function toggleJob(job) {
-    if (selectedJobs.includes(job)) {
-      selectedJobs = selectedJobs.filter(j=>j!==job);
-      if (mainJob === job) {
-        mainJob = null;
-        document.querySelectorAll(".main-job-select-icon").forEach(el=>el.classList.remove("selected"));
-      }
-    } else { selectedJobs.push(job); }
-    updateSelectionUI(); updateCard();
-  }
-
-  function updateSelectionUI() {
-    document.querySelectorAll(".job-icon").forEach(el => {
-      const job = el.id.replace("icon-","");
-      el.classList.remove("selected","main-selected");
-      if (job === mainJob) el.classList.add("main-selected");
-      else if (selectedJobs.includes(job)) el.classList.add("selected");
-    });
-  }
-
-  function selectAllJobs() { selectedJobs = getAllJobsInOrder(); updateSelectionUI(); updateCard(); }
-  function clearJobs() {
-    selectedJobs = []; mainJob = null;
-    document.querySelectorAll(".main-job-select-icon").forEach(el=>el.classList.remove("selected"));
-    updateSelectionUI(); updateCard();
-  }
-
-  function renderPlaystyleSelect() {
-    document.getElementById("playstyleSelect").innerHTML = playstyleList.map(p => {
-      const num = String(p.id).padStart(2,"0");
-      return `<img src="images/activity/1/${num}.png" class="ps-icon" id="ps-${p.id}" onclick="togglePlaystyle(${p.id})" title="${p.label}">`;
-    }).join("");
-  }
-
-  function togglePlaystyle(id) {
-    if (selectedPlaystyles.includes(id)) {
-      selectedPlaystyles = selectedPlaystyles.filter(x=>x!==id);
-    } else {
-      if (selectedPlaystyles.length >= PS_MAX) return;
-      selectedPlaystyles.push(id);
-    }
-    updatePlaystyleUI();
-    updateCard();
-  }
-
-  function updatePlaystyleUI() {
-    const count = selectedPlaystyles.length;
-    const counter = document.getElementById("psCounter");
-    counter.innerText = `${count} / ${PS_MAX} 선택`;
-    counter.className = count >= PS_MAX ? "ps-counter warn" : "ps-counter";
-    document.querySelectorAll(".ps-icon").forEach(el => {
-      const id = parseInt(el.id.replace("ps-",""));
-      el.classList.remove("selected","maxed");
-      if (selectedPlaystyles.includes(id)) el.classList.add("selected");
-      else if (count >= PS_MAX) el.classList.add("maxed");
-    });
-  }
-
-  function toggleTime(btn) {
-    const t = btn.dataset.time;
-    if (activeTimes.includes(t)) { activeTimes = activeTimes.filter(x=>x!==t); btn.classList.remove("active"); }
-    else { activeTimes.push(t); btn.classList.add("active"); }
-    updateCard();
-  }
-
-  function renderLineArtSelect() {
-    document.getElementById("lineArtSelect").innerHTML = getAllJobsInOrder().map(job =>
-      `<img src="images/jobs/ffxivjobssvg/${job}.svg" class="lineart-select-icon" id="la-${job}"
-            style="width:24px;height:24px;cursor:pointer;filter:invert(1);opacity:0.4;transition:opacity 0.1s;"
-            onclick="setLineArt('${job}')" title="${job}">`
-    ).join("");
-  }
-
-  function setLineArt(job) {
-    const la = document.getElementById("lineArt");
-    la.src = `images/jobs/CL/${job.toUpperCase()}.png`;
-    la.style.display = "block";
-    const opacity = document.getElementById("lineArtOpacity").value / 100;
-    la.style.opacity = opacity;
-    document.querySelectorAll(".lineart-select-icon").forEach(el => { el.style.opacity="0.4"; el.style.outline="none"; });
-    const sel = document.getElementById(`la-${job}`);
-    if (sel) { sel.style.opacity="1"; sel.style.outline="1px solid white"; sel.style.outlineOffset="1px"; }
-  }
-
-  function clearLineArt() {
-    const la = document.getElementById("lineArt");
-    la.style.display="none"; la.src="";
-    document.querySelectorAll(".lineart-select-icon").forEach(el => { el.style.opacity="0.4"; el.style.outline="none"; });
-  }
-
-  function updateLineArtOpacity(input) {
-    document.getElementById("opacityLabel").innerText = input.value + "%";
-    const la = document.getElementById("lineArt");
-    if (la.style.display !== "none") la.style.opacity = input.value / 100;
-  }
-
-  function loadBgImage(event) {
-    const file = event.target.files[0]; if (!file) return;
-    const reader = new FileReader();
-    reader.onload = e => {
-      const bg = document.getElementById("bgImage");
-      bg.src = e.target.result; bg.style.cursor = "grab";
-      bg.removeEventListener("mousedown", startDrag);
-      bg.addEventListener("mousedown", startDrag);
-    };
-    reader.readAsDataURL(file);
-  }
-  function startDrag(e) {
-    isDragging=true; dragStartX=e.clientX; dragStartY=e.clientY;
-    document.getElementById("bgImage").style.cursor="grabbing";
-    document.addEventListener("mousemove",onDrag); document.addEventListener("mouseup",stopDrag);
-  }
-  function onDrag(e) {
-    if (!isDragging) return;
-    const card = document.getElementById("card");
-    bgPosX = Math.min(100,Math.max(0, bgPosX-(e.clientX-dragStartX)/card.offsetWidth*100));
-    bgPosY = Math.min(100,Math.max(0, bgPosY-(e.clientY-dragStartY)/card.offsetHeight*100));
-    document.getElementById("bgImage").style.objectPosition=`${bgPosX}% ${bgPosY}%`;
-    dragStartX=e.clientX; dragStartY=e.clientY;
-  }
-  function stopDrag() {
-    isDragging=false; document.getElementById("bgImage").style.cursor="grab";
-    document.removeEventListener("mousemove",onDrag); document.removeEventListener("mouseup",stopDrag);
-  }
-
-  function fitPreview() {
-    const card = document.getElementById("card");
-    const container = document.querySelector(".preview-container");
-    const wrapper = document.getElementById("previewWrapper");
-    const cw = container.clientWidth-40, ch = container.clientHeight-40;
-    const cardW = 1080, cardH = 1920;
-    const scale = Math.min(cw/cardW, ch/cardH);
-    wrapper.style.transform = `scale(${scale})`;
-    wrapper.style.width = cardW+"px"; wrapper.style.height = cardH+"px";
-  }
-
-  function saveImage() {
-    html2canvas(document.getElementById("card"), { scale: 2 }).then(canvas => {
-      const link = document.createElement("a");
-      link.download = "ff14_cover_card.png"; link.href = canvas.toDataURL(); link.click();
-    });
-  }
-
-  // 초기화
-  renderFontGrids();
-  renderJobSelect();
-  renderMainJobSelect();
-  renderLineArtSelect();
-  renderPlaystyleSelect();
-  drawBarcode();
+// ── 시간대 ──
+function toggleTime(btn) {
+  const t = btn.dataset.t;
+  if (activeTimes.includes(t)) { activeTimes=activeTimes.filter(x=>x!==t); btn.classList.remove('active'); }
+  else { activeTimes.push(t); btn.classList.add('active'); }
   updateCard();
-  fitPreview();
-  window.addEventListener("resize", fitPreview);
-  
-  // 초기 활성 폰트 버튼 설정 (첫 번째 폰트 활성화)
-  setTimeout(() => {
-    document.querySelector('#nameFontGrid .font-btn')?.classList.add('active');
-    document.querySelector('#labelFontGrid .font-btn')?.classList.add('active');
-    document.querySelector('#titleFontGrid .font-btn')?.classList.add('active');
-  }, 10);
+}
+
+// ── 배경 드래그 ──
+function loadBg(ev) {
+  const f = ev.target.files[0]; if (!f) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    const bg = document.getElementById('bgImg');
+    bg.src = e.target.result; bg.style.cursor='grab';
+    document.getElementById('uploadText').textContent = f.name;
+    bg.onmousedown = startDrag;
+  };
+  reader.readAsDataURL(f);
+}
+function startDrag(e) {
+  dragging=true; dragSX=e.clientX; dragSY=e.clientY;
+  document.getElementById('bgImg').style.cursor='grabbing';
+  document.addEventListener('mousemove',onDrag);
+  document.addEventListener('mouseup',stopDrag);
+}
+function onDrag(e) {
+  if (!dragging) return;
+  const card = document.getElementById('card');
+  bgX = Math.min(100,Math.max(0, bgX-(e.clientX-dragSX)/card.offsetWidth*100));
+  bgY = Math.min(100,Math.max(0, bgY-(e.clientY-dragSY)/card.offsetHeight*100));
+  document.getElementById('bgImg').style.objectPosition=`${bgX}% ${bgY}%`;
+  dragSX=e.clientX; dragSY=e.clientY;
+}
+function stopDrag() {
+  dragging=false; document.getElementById('bgImg').style.cursor='grab';
+  document.removeEventListener('mousemove',onDrag);
+  document.removeEventListener('mouseup',stopDrag);
+}
+
+// ── 카드 업데이트 ──
+function updateCard() {
+  const title = (document.getElementById('titleInput').value || 'EORZEAN').toUpperCase();
+  document.getElementById('mainTitle').textContent = title;
+  document.getElementById('cardDate').textContent = getDate();
+
+  const name = document.getElementById('nameInput').value;
+  document.getElementById('cardName').textContent = name || '캐릭터';
+  document.getElementById('barcodeLabel').textContent = (name||'FF14').toUpperCase().slice(0,12);
+
+  const srv = document.getElementById('serverInput').value;
+  document.getElementById('serverDisplay').textContent = srv ? `· ${srv}` : '';
+
+  const ingame = document.getElementById('ingameCheck').checked;
+  document.getElementById('ingameNote').classList.toggle('visible', ingame);
+
+  // 라벨들
+  const l1 = document.getElementById('label1Text').value || '모험가';
+  const l1sub = document.getElementById('label1Sub').value;
+  document.getElementById('cardLabel1').textContent = l1;
+  const l1subEl = document.getElementById('cardLabel1Sub');
+  l1subEl.textContent = l1sub;
+  l1subEl.classList.toggle('visible', !!l1sub);
+
+  const l2 = document.getElementById('label2Text').value || '특종!';
+  const l2sub = document.getElementById('label2Sub').value;
+  document.getElementById('cardLabel2').textContent = l2;
+  const l2subEl = document.getElementById('cardLabel2Sub');
+  l2subEl.textContent = l2sub;
+  l2subEl.classList.toggle('visible', !!l2sub);
+  // feat title = label2 sub가 없으면 기본 문구
+  document.getElementById('featTitle').textContent = l2sub || `${name||'모험가'}는 언제보일까?`;
+
+  const l3 = document.getElementById('label3Text').value || '주로 어떤걸 즐길까?';
+  const l3sub = document.getElementById('label3Sub').value;
+  document.getElementById('cardLabel3').textContent = l3;
+  const l3subEl = document.getElementById('cardLabel3Sub');
+  l3subEl.textContent = l3sub;
+  l3subEl.classList.toggle('visible', !!l3sub);
+
+  // 메인잡
+  const mi = document.getElementById('mainJobIcon');
+  if (mainJob) { mi.src=`images/jobs/ffxivjobssvg_meteor/${mainJob}.svg`; mi.style.display='block'; }
+  else mi.style.display='none';
+
+  // 보유 직업 (메인잡 제외)
+  const subJobs = allJobs().filter(j=>selJobs.includes(j)&&j!==mainJob);
+  document.getElementById('cardJobCol').innerHTML = subJobs.map(j=>
+    `<img class="job-card-icon" src="images/jobs/ffxivjobssvg_meteor/${j}.svg">`
+  ).join('');
+
+  // 플레이스타일
+  document.getElementById('psDisplayRow').innerHTML = selPS.map(id=>{
+    const n=String(id).padStart(2,'0');
+    const lbl=PS_LIST.find(p=>p.id===id)?.l||'';
+    return `<div class="ps-item"><img src="images/activity/1/${n}.png"><span>${lbl}</span></div>`;
+  }).join('');
+
+  // 시간대
+  document.getElementById('timeSlots').innerHTML = ['아침','점심','저녁','심야','새벽'].map(t=>
+    `<div class="time-slot ${activeTimes.includes(t)?'on':''}">${t}</div>`
+  ).join('');
+
+  // 태그
+  document.getElementById('cardTags').innerHTML = (document.getElementById('tagInput').value||'')
+    .split(',').map(t=>t.trim()).filter(t=>t)
+    .map(t=>`<span class="tag">${t}</span>`).join('');
+
+  // 메모
+  document.getElementById('cardMemo').textContent = document.getElementById('memoInput').value || '';
+}
+
+// ── 피트 ──
+function fitPreview() {
+  const wrap = document.getElementById('previewWrap');
+  const area = document.querySelector('.preview-area');
+  const aw = area.clientWidth-48, ah = area.clientHeight-48;
+  const scale = Math.min(aw/1080, ah/1920);
+  wrap.style.transform = `scale(${scale})`;
+  wrap.style.width='1080px'; wrap.style.height='1920px';
+}
+
+// ── 저장 ──
+function saveImage() {
+  html2canvas(document.getElementById('card'), {scale:2}).then(canvas=>{
+    const a = document.createElement('a');
+    a.download='ff14_cover_card.png'; a.href=canvas.toDataURL(); a.click();
+  });
+}
+
+// ── 초기화 ──
+renderJobs();
+renderPS();
+renderFonts();
+drawBarcode();
+updateCard();
+fitPreview();
+window.addEventListener('resize', fitPreview);
 </script>
 </body>
 </html>
