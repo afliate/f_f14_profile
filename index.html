@@ -3,8 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <title>FF14 잡지 커버 카드 생성기</title>
-<!-- 폰트에 나눔손글씨, 나눔펜 추가 -->
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Playfair+Display:wght@400;700;900&family=Bodoni+Moda:opsz,wght@6..96,400;6..96,700;6..96,900&family=Cormorant+Garamond:wght@300;400;600;700&family=Big+Shoulders+Display:wght@400;700;900&family=Josefin+Sans:wght@300;400;600;700&family=Italiana&family=Do+Hyeon&family=Noto+Serif+KR:wght@400;700;900&family=Noto+Sans+KR:wght@300;400;700&family=Black+Han+Sans&family=Gowun+Batang:wght@400;700&family=Jua&family=Sunflower:wght@300;500;700&family=Hi+Melody&family=Nanum+Pen+Script&family=Nanum+Gothic+Coding&family=Gamja+Flower&family=Dongle:wght@300;400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Playfair+Display:wght@400;700;900&family=Bodoni+Moda:opsz,wght@6..96,400;6..96,700;6..96,900&family=Cormorant+Garamond:wght@300;400;600;700&family=Big+Shoulders+Display:wght@400;700;900&family=Josefin+Sans:wght@300;400;600;700&family=Italiana&family=Do+Hyeon&family=Noto+Serif+KR:wght@400;700;900&family=Noto+Sans+KR:wght@300;400;700&family=Black+Han+Sans&family=Gowun+Batang:wght@400;700&family=Jua&family=Sunflower:wght@300;500;700&family=Hi+Melody&family=Nanum+Pen+Script&family=Dongle:wght@300;400;700&family=Gamja+Flower&family=Nanum+Gothic+Coding&display=swap" rel="stylesheet">
 <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -182,8 +181,6 @@ body.light .field select option { background: #fff; color: #111; }
 /* 직업 아이콘 */
 .job-category { margin-bottom: 12px; }
 .job-cat-title { font-size: 10px; color: var(--text-muted); margin-bottom: 6px; letter-spacing: .06em; }
-.job-subrow { display: flex; align-items: center; gap: 5px; margin-bottom: 4px; }
-.job-sub-label { width: 36px; font-size: 10px; color: var(--text-muted); flex-shrink: 0; }
 .job-row { display: flex; flex-wrap: wrap; gap: 3px; }
 
 .job-icon {
@@ -489,27 +486,32 @@ body.light #mainJobIcon { filter: drop-shadow(0 0 10px rgba(0,0,0,.3)); }
 }
 .time-slot.on { display: inline-block; }
 
-/* 잡 아이콘 컨테이너 (동적 변경) */
-.card-job-col {
-  position: absolute; left: 0; top: 140px; bottom: 0; width: 56px;
-  display: flex; flex-direction: column; align-items: center;
-  justify-content: flex-end; padding-bottom: 260px; z-index: 9; gap: 4px;
+/* 잡 아이콘 영역 (왼쪽 하단) */
+.card-job-wrapper {
+  position: absolute; left: 20px; bottom: 40px; z-index: 10;
+  display: flex; flex-direction: column; align-items: flex-start;
+}
+.credit-and-side {
+  display: flex; flex-direction: row; align-items: flex-end;
+}
+.card-credit {
+  writing-mode: vertical-rl;
+  font-size: 9px; letter-spacing: .06em; color: white; opacity: .4;
+  white-space: nowrap; line-height: 1.4;
+}
+.job-col-side {
+  display: flex; flex-direction: column; gap: 6px;
+  margin-left: 10px;
+}
+.job-col-top {
+  display: flex; flex-direction: column; gap: 6px;
+  margin-bottom: 10px;
 }
 .job-card-icon {
-  width: 40px; height: 40px;
-  filter: invert(1); opacity: .8;
+  width: 36px; height: 36px;
+  filter: invert(1); opacity: .85;
 }
 body.light .job-card-icon { filter: none; }
-
-/* 저작권 */
-.card-credit {
-  position: absolute; right: 40px; bottom: 120px; z-index: 10;
-  writing-mode: vertical-rl;
-  font-size: 10px; letter-spacing: .06em; color: white;
-  text-shadow: 0 0 8px rgba(255,255,255,.7), 0 0 16px rgba(255,255,255,.4);
-  opacity: .7; white-space: nowrap; line-height: 1.4;
-}
-body.light .card-credit { color: #111; text-shadow: 0 0 8px rgba(255,255,255,.9), 0 0 16px rgba(255,255,255,.7); }
 
 /* 태그 / 메모 */
 #cardTags {
@@ -817,7 +819,7 @@ body.light .card-credit { color: #111; text-shadow: 0 0 8px rgba(255,255,255,.9)
   </div>
 </div>
 
-<!-- 미리보기 영역 -->
+  <!-- 미리보기 영역 -->
 <div class="preview-area">
   <div class="preview-wrap" id="previewWrap">
     <div class="card" id="card">
@@ -866,10 +868,14 @@ body.light .card-credit { color: #111; text-shadow: 0 0 8px rgba(255,255,255,.9)
         <div class="time-slots" id="timeSlots"></div>
       </div>
 
-      <!-- 잡 아이콘 (동적 배치) -->
-      <div class="card-job-col" id="cardJobCol"></div>
-
-      <div class="card-credit">ⓒ SQUARE ENIX · Published in Korea by ACTOZ SOFT CO., LTD · FINAL FANTASY XIV</div>
+      <!-- 잡 아이콘 영역 (왼쪽 하단) -->
+      <div class="card-job-wrapper">
+        <div class="job-col-top" id="jobColTop"></div>
+        <div class="credit-and-side">
+          <div class="card-credit">ⓒ SQUARE ENIX · Published in Korea by ACTOZ SOFT CO., LTD · FINAL FANTASY XIV</div>
+          <div class="job-col-side" id="jobColSide"></div>
+        </div>
+      </div>
 
       <div id="cardTags"></div>
       <div id="cardMemo"></div>
@@ -902,7 +908,6 @@ const PS_LIST = [
   {id:33,l:"무작위임무"},{id:35,l:"멘토"},
 ];
 
-// 폰트 (구기체 제거, 나눔손글씨/동글 추가)
 const KO_FONTS = [
   {name:'Do Hyeon', preview:'도현체 가나다'},
   {name:'Black Han Sans', preview:'블랙한산스'},
@@ -931,13 +936,10 @@ const EN_FONTS = [
 const PS_MAX = 7;
 let selJobs = [], mainJob = null, activeTimes = [], selPS = [];
 let bgX=50, bgY=50, dragging=false, dragSX, dragSY;
-let currentNameFont = 'Do Hyeon';
-let currentLabelFont = 'Do Hyeon';
-let currentTitleFont = 'Bebas Neue';
 
 function allJobs() { return Object.values(JOB_CATS).flat(); }
 
-// ── 탭 ──
+// ── 탭 전환 ──
 function switchTab(id, btn) {
   document.querySelectorAll('.tab-content').forEach(e=>e.classList.remove('active'));
   document.querySelectorAll('.tab-btn').forEach(e=>e.classList.remove('active'));
@@ -1035,18 +1037,15 @@ function mkFontItem(f, cb, group) {
 }
 
 function setNameFont(font, btn) {
-  currentNameFont = font;
   document.documentElement.style.setProperty('--name-font', `'${font}'`);
   document.getElementById('cardName').style.fontFamily = `'${font}', sans-serif`;
   document.getElementById('serverDisplay').style.fontFamily = `'${font}', sans-serif`;
 }
 function setLabelFont(font, btn) {
-  currentLabelFont = font;
   document.documentElement.style.setProperty('--label-font', `'${font}'`);
   document.documentElement.style.setProperty('--info-font', `'${font}'`);
 }
 function setTitleFont(font, btn) {
-  currentTitleFont = font;
   document.getElementById('mainTitle').style.fontFamily = `'${font}', sans-serif`;
 }
 
@@ -1185,7 +1184,7 @@ function stopDrag() {
   document.removeEventListener('mouseup',stopDrag);
 }
 
-// ── 카드 업데이트 (잡 아이콘 동적 배치 포함) ──
+// ── 카드 업데이트 (잡 아이콘 동적 배치) ──
 function updateCard() {
   const title = (document.getElementById('titleInput').value || 'EORZEAN').toUpperCase();
   document.getElementById('mainTitle').textContent = title;
@@ -1228,21 +1227,21 @@ function updateCard() {
   if (mainJob) { mi.src=`images/jobs/ffxivjobssvg_meteor/${mainJob}.svg`; mi.style.display='block'; }
   else mi.style.display='none';
 
-  // 보유 직업 (메인잡 제외)
+  // 보유 직업 (메인잡 제외) → 동적 세로 배치
   const subJobs = allJobs().filter(j=>selJobs.includes(j)&&j!==mainJob);
-  const jobCol = document.getElementById('cardJobCol');
-  const MAX_ROW_JOBS = 8;
-  // 동적 배치: 8개 초과면 세로 정렬
-  if (subJobs.length > MAX_ROW_JOBS) {
-    jobCol.style.flexDirection = 'column';
-    jobCol.style.alignItems = 'center';
-  } else {
-    jobCol.style.flexDirection = 'row';
-    jobCol.style.alignItems = 'flex-end';
-  }
-  jobCol.innerHTML = subJobs.map(j=>
+  const MAX_PER_COL = 8;
+  const sideJobs = subJobs.slice(0, MAX_PER_COL);
+  const topJobs = subJobs.slice(MAX_PER_COL);
+
+  document.getElementById('jobColSide').innerHTML = sideJobs.map(j => 
     `<img class="job-card-icon" src="images/jobs/ffxivjobssvg_meteor/${j}.svg">`
   ).join('');
+  document.getElementById('jobColTop').innerHTML = topJobs.map(j => 
+    `<img class="job-card-icon" src="images/jobs/ffxivjobssvg_meteor/${j}.svg">`
+  ).join('');
+
+  document.getElementById('jobColSide').style.display = sideJobs.length ? 'flex' : 'none';
+  document.getElementById('jobColTop').style.display = topJobs.length ? 'flex' : 'none';
 
   // 플레이스타일
   document.getElementById('psDisplayRow').innerHTML = selPS.map(id=>{
